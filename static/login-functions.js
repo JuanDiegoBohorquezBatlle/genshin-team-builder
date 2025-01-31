@@ -192,7 +192,7 @@ async function fetchCharacters() {
     }
 }
 
-// Function to load character icons
+// Function to load character icons with better UI
 async function loadCharacterIcons() {
     const characterIconsContainer = document.getElementById('characterIcons');
     if (!characterIconsContainer) {
@@ -200,34 +200,75 @@ async function loadCharacterIcons() {
         return;
     }
 
+    // Add loading state
+    characterIconsContainer.innerHTML = '<div class="text-center">Loading characters...</div>';
+
     // Fetch character data from the API
     const characters = await fetchCharacters();
     if (characters.length === 0) return;
 
-    // Display character icons
+    // Clear loading state
+    characterIconsContainer.innerHTML = '';
+
+    // Display character icons in a grid
+    const grid = document.createElement('div');
+    grid.classList.add('character-grid');
+    
     characters.forEach(character => {
+        const card = document.createElement('div');
+        card.classList.add('character-card');
+        
         const img = document.createElement('img');
-        img.src = `${GENSHIN_API_URL}/characters/${character}/icon`; // Use the API's icon endpoint
+        img.src = `${GENSHIN_API_URL}/characters/${character}/icon`;
         img.alt = character;
         img.classList.add('character-icon');
-        img.addEventListener('click', () => toggleCharacterSelection(character));
-        characterIconsContainer.appendChild(img);
+        
+        const name = document.createElement('div');
+        name.classList.add('character-name');
+        name.textContent = character;
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.classList.add('character-checkbox');
+        checkbox.addEventListener('change', () => toggleCharacterSelection(character));
+        
+        card.appendChild(img);
+        card.appendChild(name);
+        card.appendChild(checkbox);
+        grid.appendChild(card);
     });
+
+    characterIconsContainer.appendChild(grid);
+    
+    // Add confirm button
+    const confirmButton = document.createElement('button');
+    confirmButton.id = 'confirmSelection';
+    confirmButton.classList.add('btn', 'btn-primary', 'mt-3');
+    confirmButton.textContent = 'Confirm Selection and Generate Teams';
+    confirmButton.addEventListener('click', generateTeamsFromSelection);
+    
+    characterIconsContainer.appendChild(confirmButton);
 }
 
-// Function to toggle character selection
+// Function to toggle character selection with better visual feedback
 const selectedCharacters = new Set();
 
 function toggleCharacterSelection(character) {
-    const icon = document.querySelector(`img[alt="${character}"]`);
-    if (!icon) return;
+    const card = document.querySelector(`.character-card:has(input[value="${character}"])`);
+    if (!card) return;
 
     if (selectedCharacters.has(character)) {
         selectedCharacters.delete(character);
-        icon.classList.remove('selected');
+        card.classList.remove('selected');
     } else {
         selectedCharacters.add(character);
-        icon.classList.add('selected');
+        card.classList.add('selected');
+    }
+    
+    // Update confirm button text with count
+    const confirmButton = document.getElementById('confirmSelection');
+    if (confirmButton) {
+        confirmButton.textContent = `Generate Teams (${selectedCharacters.size} selected)`;
     }
 }
 
