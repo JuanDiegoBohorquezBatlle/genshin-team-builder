@@ -1,0 +1,7 @@
+- add new characters to PDF and CSV 
+- refine output for explanations 
+- make UI look better (add background, make grid look not so cramped)
+
+
+- add feature: check whether the team is viable based on abilities 
+- add feature: 

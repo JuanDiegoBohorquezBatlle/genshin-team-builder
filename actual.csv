@@ -1,0 +1,99 @@
+Character,Best Role,Role Tier,Recommended Weapon,Element,Nightsoul
+Albedo,Sub-DPS,B,Cinnabar Spindle,Geo,FALSE
+Alhaitham,Main DPS,S,,Dendro,FALSE
+Aloy,Main DPS,C,,Cryo,FALSE
+Amber,Sub-DPS,C,Elegy for the End,Pyro,FALSE
+Arataki-Itto,Main DPS,B,,Geo,FALSE
+Arlecchino,Main DPS,SS,,Pyro,FALSE
+Ayaka,Main DPS,A,,Cryo,FALSE
+Ayato,Main DPS,A,,Hydro,FALSE
+Baizhu,Support,S,,Dendro,FALSE
+Barbara,Support,C,Thrilling Tales,Hydro,FALSE
+Beidou,Sub-DPS,A,Wolf's Gravestone,Electro,FALSE
+Bennett,Support,SS,Aquila Favonia,Pyro,FALSE
+Candace,Support,C,,Hydro,FALSE
+Charlotte,Support,A,,Cryo,FALSE
+Chasca,Main DPS,S,,Anemo,TRUE
+Chevreuse,Support,S,Prospector's Drill,Pyro,FALSE
+Chiori,Main DPS,S,,Geo,FALSE
+Chongyun,Sub-DPS,C,Wolf's Gravestone,Cryo,FALSE
+Collei,Sub-DPS,A,Elegy for the End,Dendro,FALSE
+Citlali,Support,S,,Cryo,TRUE
+Clorinde,Main DPS,S,,Electro,FALSE
+Cyno,Main DPS,B,,Electro,FALSE
+Dehya,Main DPS,B,Beacon of the Reed Sea,Pyro,FALSE
+Diluc,Main DPS,A,Wolf's Gravestone,Pyro,FALSE
+Diona,Support,A,Sacrificial Bow,Cryo,FALSE
+Dori,Support,C,Favonius Greatsword,Electro,FALSE
+Emilie,Sub-DPS,S,,Dendro,FALSE
+Eula,Main DPS,B,Song of Broken Pines,Cryo,FALSE
+Faruzan,Support,A,Favonius Warbow,Anemo,FALSE
+Fischl,Sub-DPS,S,Skyward Harp,Electro,FALSE
+Freminet,Main DPS,C,Serpent Spine,Cryo,FALSE
+Furina,Support,SS,Splendor of Tranquil Waters,Hydro,FALSE
+Gaming,Sub-DPS,A,The Bell,Pyro,FALSE
+Ganyu,Main DPS,A,Amos' Bow,Cryo,FALSE
+Gorou,Support,B,Favonius Warbow,Geo,FALSE
+Hu-Tao,Main DPS,S,Staff of Homa,Pyro,FALSE
+Jean,Support,S,Freedom-Sworn,Anemo,FALSE
+Kaedehara-Kazuha,Support,SS,Freedom-Sworn,Anemo,FALSE
+Kaveh,Main DPS,C,,Dendro,FALSE
+Kaeya,Sub-DPS,C,Mistsplitter,Cryo,FALSE
+Kachina,Support,C,Black Tassel,Geo,TRUE
+Keqing,Main DPS,B,Mistsplitter,Electro,FALSE
+Kinich,Main DPS,S,,Dendro,TRUE
+Kirara,Support,B,Favonius Sword,Dendro,FALSE
+Klee,Main DPS,C,Lost Prayer,Pyro,FALSE
+Kokomi,Support,S,Everlasting Moonglow,Hydro,FALSE
+Kujou Sara,Support,A,Skyward Harp,Electro,FALSE
+Kuki Shinobu,Support,S,Freedom-Sworn,Electro,FALSE
+Layla,Support,B,,Cryo,FALSE
+Lisa,Support,B,Thrilling Tales,Electro,FALSE
+Lynette,Sub-DPS,B,Favonius Sword,Anemo,FALSE
+Lyney,Main DPS,S,Thundering Pulse,Pyro,FALSE
+Mavuika,Main DPS,SS,A Thousand Blazing Suns,Pyro ,TRUE
+Mika,Support,B,Favonius Lance,Cryo,FALSE
+Mona,Support,S,Thrilling Tales,Hydro,FALSE
+Mualani,Main DPS,S,,Hydro,TRUE
+Nahida,Support/Sub-DPS,SS,A Thousand Floating Dreams,Dendro,FALSE
+Navia,Main DPS,S,Verdict,Geo,FALSE
+Neuvillette,Main DPS,S,Tome of the Eternal Flow,Hydro,FALSE
+Nilou,Sub-DPS,S,,Hydro,FALSE
+Ningguang,Main DPS,C,Lost Prayer,Geo,FALSE
+Noelle,Main DPS,B,Redhorn Stonethresher,Geo,FALSE
+Ororon,Sub-DPS,A,,Electro,FALSE
+Qiqi,Support,C,Sacrificial Sword,Cryo,FALSE
+Raiden Shogun,Main DPS/Sub-DPS/Support,SS,Engulfing Lightning,Electro,FALSE
+Razor,Main DPS,C,Wolf's Gravestone,Electro,FALSE
+Rosaria,Sub-DPS,A,Staff of Homa,Cryo,FALSE
+Sayu,Support,B,Wolf's Gravestone,Anemo,FALSE
+Sethos,Main DPS,B,,Electro,FALSE
+Shenhe,Support,S,Calamity Queller,Cryo,FALSE
+Shikanoin Heizou,Main DPS,C,,Anemo,FALSE
+Sigewinne,Support,B,,Hydro,FALSE
+Sucrose,Support,S,Sacrificial Fragments,Anemo,FALSE
+Tartaglia,Main DPS,A,Polar Star,Hydro,FALSE
+Thoma,Support,B,Black Tassel,Pyro,FALSE
+Tighnari,Main DPS,A,Hunter's Path,Dendro,FALSE
+Traveler-Anemo,Sub-DPS,C,,Anemo,FALSE
+Traveler-Geo,Sub-DPS,C,Freedom-Sworn,Geo,FALSE
+Traveler-Electro,Support,C,,Electro,FALSE
+Traveler-Dendro,Sub-DPS,B,,Dendro,FALSE
+Traveler-Hydro,Sub-DPS,C,,Hydro,FALSE
+Traveler-Pyro,Sub-DPS,A,,Pyro,FALSE
+Venti,Sub-DPS/Support,A,Elegy for the End,Anemo,FALSE
+Wanderer,Main DPS,A,Tulaytullah's Remembrance,Anemo,FALSE
+Wriothesley,Main DPS,S,Cashflow Supervision,Cryo,FALSE
+Xianyun,Support,S,Crane's Echoing Call,Anemo,FALSE
+Xiangling,Sub-DPS,SS,Staff of Homa,Pyro,FALSE
+Xiao,Main DPS,A,Primordial Jade Winged-Spear,Anemo,FALSE
+Xilonen,Support,SS,,Geo,TRUE
+Xingqiu,Sub-DPS,SS,Sacrificial Sword,Hydro,FALSE
+Xinyan,Support,C,Wolf's Gravestone,Pyro,FALSE
+Yae Miko,Sub-DPS,S,Kagura's Verity,Electro,FALSE
+Yanfei,Main DPS,C,Lost Prayer,Pyro,FALSE
+Yaoyao,Support,A,Black Tassel,Dendro,FALSE
+Yelan,Sub-DPS,SS,Aqua Simulacra,Hydro,FALSE
+Yoimiya,Main DPS,B,Thundering Pulse,Pyro,FALSE
+Yun Jin,Support,S,Favonius Lance,Geo,FALSE
+Zhongli,Support,SS,Black Tassel,Geo,FALSE

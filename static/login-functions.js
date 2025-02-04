@@ -46,7 +46,6 @@ async function submitLogin() {
         const data = await response.json();
         console.log('Logged in successfully:', data);
 
-        toggleVisibility('login', false);
         await getUserCharacters();
         
         toggleVisibility('characters', true);
@@ -157,42 +156,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-document.getElementById('openTeamsTab').addEventListener('click', function () {
-    const teamsTab = new bootstrap.Tab(document.getElementById('pills-teams-tab'));
-    teamsTab.show();
 
-    const teamsContent = sessionStorage.getItem('teamsContent');
-    const explanationContent = sessionStorage.getItem('explanationContent');
+const LOCAL_ASSETS_PATH = 'assets/images/characters';
 
-    if (teamsContent) {
-        document.getElementById('teamsList').innerHTML = teamsContent;
-    }
-
-    if (explanationContent) {
-        document.getElementById('explanationText').innerHTML = explanationContent;
-    }
-});
-
-// Define the base URL for the GenshinDev API
-const GENSHIN_API_URL = 'https://genshin.dev/api';
-
-// Function to fetch character data from the API
 async function fetchCharacters() {
     try {
-        const response = await fetch(`${GENSHIN_API_URL}/characters`);
+        const response = await fetch(`${LOCAL_ASSETS_PATH}/characters.json`);
         if (!response.ok) {
-            throw new Error('Failed to fetch characters');
+            throw new Error('Failed to load local character data');
         }
         const characters = await response.json();
         return characters;
     } catch (error) {
         console.error('Error fetching characters:', error);
-        alert('Failed to load characters. Please try again later.');
+        alert('Failed to load characters from local assets.');
         return [];
     }
 }
 
-// Function to load character icons with better UI
+
 async function loadCharacterIcons() {
     const characterIconsContainer = document.getElementById('characterIcons');
     if (!characterIconsContainer) {
@@ -200,38 +182,36 @@ async function loadCharacterIcons() {
         return;
     }
 
-    // Add loading state
     characterIconsContainer.innerHTML = '<div class="text-center">Loading characters...</div>';
 
-    // Fetch character data from the API
     const characters = await fetchCharacters();
     if (characters.length === 0) return;
 
-    // Clear loading state
     characterIconsContainer.innerHTML = '';
 
-    // Display character icons in a grid
     const grid = document.createElement('div');
     grid.classList.add('character-grid');
-    
+
     characters.forEach(character => {
         const card = document.createElement('div');
         card.classList.add('character-card');
-        
+
         const img = document.createElement('img');
-        img.src = `${GENSHIN_API_URL}/characters/${character}/icon`;
+        img.src = `${LOCAL_ASSETS_PATH}/${character.toLowerCase().replace(/ /g, "_")}/icon-big.png`; 
         img.alt = character;
         img.classList.add('character-icon');
-        
+
         const name = document.createElement('div');
         name.classList.add('character-name');
         name.textContent = character;
-        
+
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.classList.add('character-checkbox');
-        checkbox.addEventListener('change', () => toggleCharacterSelection(character));
-        
+        checkbox.value = character; // Add this line to store the character name
+        checkbox.addEventListener('change', () => toggleCharacterSelection(character, checkbox.checked));
+
+
         card.appendChild(img);
         card.appendChild(name);
         card.appendChild(checkbox);
@@ -239,79 +219,73 @@ async function loadCharacterIcons() {
     });
 
     characterIconsContainer.appendChild(grid);
-    
-    // Add confirm button
+
     const confirmButton = document.createElement('button');
     confirmButton.id = 'confirmSelection';
     confirmButton.classList.add('btn', 'btn-primary', 'mt-3');
     confirmButton.textContent = 'Confirm Selection and Generate Teams';
     confirmButton.addEventListener('click', generateTeamsFromSelection);
-    
+
     characterIconsContainer.appendChild(confirmButton);
 }
 
 // Function to toggle character selection with better visual feedback
 const selectedCharacters = new Set();
 
-function toggleCharacterSelection(character) {
-    const card = document.querySelector(`.character-card:has(input[value="${character}"])`);
+function toggleCharacterSelection(character, isChecked) {
+    const card = document.querySelector(`.character-card input[value="${character}"]`).closest('.character-card');
     if (!card) return;
 
-    if (selectedCharacters.has(character)) {
-        selectedCharacters.delete(character);
-        card.classList.remove('selected');
-    } else {
+    if (isChecked) {
         selectedCharacters.add(character);
         card.classList.add('selected');
+    } else {
+        selectedCharacters.delete(character);
+        card.classList.remove('selected');
     }
-    
-    // Update confirm button text with count
+
+    // Update confirm button text
     const confirmButton = document.getElementById('confirmSelection');
     if (confirmButton) {
+        confirmButton.disabled = selectedCharacters.size < 4;
         confirmButton.textContent = `Generate Teams (${selectedCharacters.size} selected)`;
     }
 }
 
+
+
 // Function to generate teams based on selected characters
 async function generateTeamsFromSelection() {
-    if (selectedCharacters.size === 0) {
-        alert('Please select at least one character.');
+    if (selectedCharacters.size < 4) {
+        alert('Please select at least four characters.');
         return;
     }
 
     try {
         toggleVisibility('loading', true);
 
-        const response = await fetch(`${BASE_URL}/generate_teams`, {
+        const formattedCharacters = Array.from(selectedCharacters);
+        console.log('Sending characters to backend:', formattedCharacters);
+
+        const response = await fetch(`${BASE_URL}/generate_teams_from_selection`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ characters: Array.from(selectedCharacters) })
+            body: JSON.stringify({ characters: formattedCharacters })
         });
 
         if (!response.ok) {
-            throw new Error('Failed to generate teams');
+            throw new Error(`Server responded with status: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('Teams generated:', data);
+        console.log('Server response:', data);
 
-        // Display the generated teams and explanation
-        displayTeams(data.teams, data.explanation);
-    } catch (error) {
-        console.error('Error generating teams:', error);
-        alert('Failed to generate teams: ' + error.message);
-    } finally {
-        toggleVisibility('loading', false);
-    }
-}
+        if (!data.teams || !Array.isArray(data.teams)) {
+            throw new Error('Invalid teams data format: ' + JSON.stringify(data));
+        }
 
-// Function to display generated teams and explanation
-function displayTeams(teams, explanation) {
-    const teamsList = document.getElementById('teamsList');
-    const explanationText = document.getElementById('explanationText');
-
-    if (teamsList && explanationText) {
-        teamsList.innerHTML = teams.map(team => `
+        // Save teams and explanations to sessionStorage
+        const teamsHTML = data.teams.map(team => `
             <li>
                 <h3>${team['Team Name']}</h3>
                 <div class="characters">
@@ -327,12 +301,86 @@ function displayTeams(teams, explanation) {
             </li>
         `).join('');
 
-        explanationText.innerHTML = explanation || 'No explanation available.';
+        sessionStorage.setItem('teamsContent', teamsHTML);
+        sessionStorage.setItem('explanationContent', data.explanation || '');
 
-        toggleVisibility('teams-container', true);
-        toggleVisibility('explanation', true);
+        // Display teams and switch to teams tab
+        displayTeams(data.teams, data.explanation);
+        const teamsTab = document.getElementById('pills-teams-tab');
+        const bsTab = new bootstrap.Tab(teamsTab);
+        bsTab.show();
+
+    } catch (error) {
+        console.error('Error generating teams:', error);
+        alert('Failed to generate teams: ' + error.message);
+    } finally {
+        toggleVisibility('loading', false);
     }
 }
+
+
+
+// Function to display generated teams and explanation
+function displayTeams(teams, explanation) {
+    const teamsList = document.getElementById("teamsList");
+
+    if (teamsList) {
+        console.log("Received explanation:", explanation); 
+
+        let explanationSections = {};
+
+        // Extract explanations properly
+        if (explanation) {
+            const explanationParts = explanation.split(/\*\*Team \d+: (.*?)\*\*/);
+            console.log("📝 Extracted parts:", explanationParts);
+
+            for (let i = 1; i < explanationParts.length; i += 2) {
+                const teamKey = explanationParts[i].trim();
+                const teamExplanation = explanationParts[i + 1]?.trim() || "No explanation available.";
+                explanationSections[teamKey] = teamExplanation;
+                console.log(`Matched Explanation for ${teamKey}:`, teamExplanation);
+            }
+        }
+
+        teamsList.innerHTML = teams.map((team, index) => {
+            const teamName = `<h3>${team["Team Name"]}</h3>`;
+
+            // Generate character icons with roles
+            const characterDisplay = team.Characters.map(char => `
+                <div class="character-entry">
+                    <img src="${LOCAL_ASSETS_PATH}/${char.Name.toLowerCase().replace(/ /g, "_")}/icon-big.png" 
+                         alt="${char.Name}" 
+                         class="character-icon">
+                    <span class="character-name">${char.Name} (${char.Role})</span>
+                </div>
+            `).join("");
+
+            // Construct team key based on character names
+            const teamKey = team.Characters.map(c => c.Name).join(", ");
+            console.log("🔹 Looking for explanation with key:", teamKey);
+
+            // Match the explanation with the team
+            const formattedExplanation = explanationSections[teamKey]
+                ? `<p>${explanationSections[teamKey].replace(/\n/g, "<br>")}</p>`
+                : "<p>No explanation available.</p>";
+
+            return `
+                <li class="team-card">
+                    ${teamName}
+                    <div class="character-icons">${characterDisplay}</div>
+                    <div class="team-explanation">${formattedExplanation}</div>
+                </li>
+            `;
+        }).join("");
+
+        // Show the teams container
+        toggleVisibility("teams-container", true);
+    }
+}
+
+
+
+
 
 // Event listener for the generate teams button
 document.getElementById('generateTeamsButton')?.addEventListener('click', generateTeamsFromSelection);
@@ -342,3 +390,4 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCharacterIcons();
     toggleVisibility('characterSelection', true);
 });
+

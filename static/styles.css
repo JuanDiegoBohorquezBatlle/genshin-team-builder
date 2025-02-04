@@ -1,0 +1,173 @@
+@font-face {
+    font-family: 'zh-cn';
+    src: url('zh-cn.ttf') format('truetype');
+}
+
+body {
+    font-family: 'zh-cn', sans-serif;
+    color: #ffffff; /* White text */
+    background-color: #0a0a0a; /* Dark background */
+    margin: 3px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 100px;
+    position: relative;
+    overflow: hidden;
+}
+
+
+h1, h2 {
+    text-align: center;
+    color: #ffffff; 
+}
+
+
+button {
+    margin-top: 10px;
+    width: 50%;
+    background-color: #f5ebb2 !important; 
+    color: rgb(0, 0, 0) !important;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s ease-in-out;
+}
+
+button:hover {
+    background-color: #dabd19; 
+}
+
+.nav-pills .nav-link {
+    all: unset;
+    display: block;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background: transparent;
+    color: #FFD700; 
+    text-align: center;
+    border: 1px solid #FFD700; 
+}
+
+.nav-pills .nav-link.active {
+    background-color: #FFD700; 
+    color: black;
+}
+
+pre, .team-explanation {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-wrap: break-word;
+    border: 1px solid #FFD700;
+}
+
+.team-card {
+    padding: 15px;
+    border: 1px solid #FFD700;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background-color: rgba(255, 215, 0, 0.1);
+    text-align: center;
+    color: white;
+}
+
+.character-icons {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.character-entry {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.character-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #5b9fe7; 
+}
+
+.character-name {
+    font-size: 14px;
+    margin-top: 5px;
+    color: white !important;
+}
+
+#loading {
+    color: white;
+    text-align: center;
+    font-size: 16px;
+}
+
+.character-card.selected {
+    border-color: #FFD700;
+    background-color: rgba(255, 215, 0, 0.2);
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+ul li {
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+}
+
+/* Fix viewport and scrolling foundation */
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow-y: auto !important; /* Force scrollability */
+  }
+  
+  /* Main content container */
+  .tab-content {
+    height: calc(100vh - 120px); /* Account for header/nav height */
+    overflow-y: auto !important;
+  }
+  
+  /* Character grid specific adjustments */
+  #pills-characters {
+    display: block !important; /* Override Bootstrap's flex */
+    width: 100% !important; 
+    float: left;
+  }
+  
+  .character-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    width: 100%;
+    max-width: 800px; /* Control maximum expansion */
+    padding: 5px;
+    overflow: visible !important;
+  }
+  
+  /* Teams list adjustments */
+  #pills-teams {
+    width: 70% !important;
+    float: left;
+    padding-left: 20px;
+  }
+  
+  /* Clear floats for mobile */
+  @media (max-width: 768px) {
+    #pills-characters, 
+    #pills-teams {
+      width: 100% !important;
+      float: none;
+    }
+  }

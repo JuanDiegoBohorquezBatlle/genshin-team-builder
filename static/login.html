@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <title>Genshin Team Builder</title>
+    <h1> Genshin Team Builder</h1>
+    <h5> This is a tool to help you build your ideal party in Genshin Impact, complete with AI-assisted explanations. To start, either login to your Hoyolab account or manually select the characters you own.</h5>
     <style>
         #teams-container {
             margin-top: 20px;
@@ -27,9 +29,9 @@
         }
         .character-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 15px;
-            padding: 20px;
+            padding: 1px;
         }
         .character-card {
             position: relative;
@@ -44,8 +46,8 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .character-icon {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             object-fit: cover;
             margin-bottom: 8px;
@@ -62,7 +64,7 @@
             cursor: pointer;
         }
         .character-card.selected {
-            border-color: #0d6efd;
+            border-color: #fff427;
             background-color: #e9f5ff;
         }
         #confirmSelection {
@@ -84,9 +86,6 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="pills-teams-tab" data-bs-toggle="pill" data-bs-target="#pills-teams" type="button" role="tab" aria-controls="pills-teams" aria-selected="false">Generated Teams</button>
         </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-analysis-tab" data-bs-toggle="pill" data-bs-target="#pills-analysis" type="button" role="tab" aria-controls="pills-analysis" aria-selected="false">Team Analysis</button>
-        </li>
     </ul>
 
 
@@ -94,10 +93,9 @@
         <!-- Characters Tab Content -->
         <div class="tab-pane fade show active" id="pills-characters" role="tabpanel" aria-labelledby="pills-characters-tab">
           <!-- Character Selection Grid -->
-          <div id="characterSelection" style="display: none;">
+          <div id="characterSelection">
             <h2>Select Your Characters</h2>
             <div id="characterIcons"></div> <!-- Character icons will load here -->
-            <button id="generateTeamsButton" class="btn btn-primary">Generate Teams</button>
           </div>
       
           <!-- Your Characters List (from HoYoLAB login) -->
@@ -109,25 +107,14 @@
         <!-- Generated Teams Tab Content -->
         <div class="tab-pane fade" id="pills-teams" role="tabpanel" aria-labelledby="pills-teams-tab">
           <div id="teams-container" style="display: none;">
-            <h2>Generated Teams</h2>
+            <h2>Generated Teams and Explanations</h2>
             <ul id="teamsList"></ul> 
           </div>
         </div>
       
-        <!-- Team Analysis Tab Content -->
-        <div class="tab-pane fade" id="pills-analysis" role="tabpanel" aria-labelledby="pills-analysis-tab">
-          <div id="explanation" style="display: none;">
-            <h3>Team Analysis</h3>
-            <div id="explanationText"></div> <!-- Explanation text goes here -->
-          </div>
-        </div>
     </div>
 
-    <div id="characterSelection" style="display: none;">
-        <h2>Select Your Characters</h2>
-        <div id="characterIcons"></div>
-        <button id="generateTeamsButton" class="btn btn-primary">Generate Teams</button>
-    </div>
+    
 
     
 
@@ -159,7 +146,10 @@
 
 
     <div id="loading" style="display: none;">
-        Generating teams and analysis... Please wait...
+        <div class="d-flex align-items-center">
+            <strong>Generating teams and explanations... Please wait...</strong>
+            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+        </div>
     </div>
 
     <div id="done" style="display:none;" >
