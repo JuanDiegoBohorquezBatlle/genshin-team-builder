@@ -5,8 +5,8 @@
 
 body {
     font-family: 'zh-cn', sans-serif;
-    color: #ffffff; /* White text */
-    background-color: #0a0a0a; /* Dark background */
+    color: #ffffff; 
+    background-color: #0a0a0a; 
     margin: 3px;
     padding: 0;
     display: flex;
@@ -22,6 +22,10 @@ h1, h2 {
     text-align: center;
     color: #ffffff; 
 }
+
+h5 { text-align: center;
+font-size: 17px;
+margin-top: 10px; }
 
 
 button {
@@ -40,6 +44,14 @@ button:hover {
     background-color: #dabd19; 
 }
 
+#loginModal {
+    color: #000 !important;
+}
+
+#loginModal .form-label,
+#loginModal .modal-title {
+    color: #000 !important;
+}
 .nav-pills .nav-link {
     all: unset;
     display: block;
@@ -77,6 +89,13 @@ pre, .team-explanation {
     color: white;
 }
 
+.team-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+
 .character-icons {
     display: flex;
     justify-content: center;
@@ -104,6 +123,10 @@ pre, .team-explanation {
     margin-top: 5px;
     color: white !important;
 }
+.character-card.selected .character-name {
+    color: black !important;
+}
+
 
 #loading {
     color: white;
@@ -113,8 +136,9 @@ pre, .team-explanation {
 
 .character-card.selected {
     border-color: #FFD700;
-    background-color: rgba(255, 215, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.2);
 }
+
 
 ul {
     list-style-type: none;
@@ -128,22 +152,50 @@ ul li {
     box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
 }
 
-/* Fix viewport and scrolling foundation */
+#characterSelectionContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; 
+    justify-content: flex-start; 
+    gap: 20px; 
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.character-icons-section {
+    flex: 1;  
+    max-width: 80%;  
+}
+
+.button-section {
+    top: 5px;  
+    width: 200px;  
+}
+
+#confirmSelection {
+    width: 100%;
+    margin-top: 0;  
+}
+
+
 html, body {
     height: 100%;
+    width: 100%; 
     margin: 0;
-    overflow-y: auto !important; /* Force scrollability */
+    overflow-y: auto !important; 
   }
   
-  /* Main content container */
+
   .tab-content {
-    height: calc(100vh - 120px); /* Account for header/nav height */
-    overflow-y: auto !important;
-  }
+    display: flex;  
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: center;
+    min-height: calc(100vh - 120px); 
+}
   
-  /* Character grid specific adjustments */
   #pills-characters {
-    display: block !important; /* Override Bootstrap's flex */
+    display: block !important; 
     width: 100% !important; 
     float: left;
   }
@@ -151,19 +203,17 @@ html, body {
   .character-grid {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     width: 100%;
-    max-width: 800px; /* Control maximum expansion */
+    max-width: 900px; 
     padding: 5px;
     overflow: visible !important;
   }
   
-  /* Teams list adjustments */
   #pills-teams {
     width: 70% !important;
     float: left;
     padding-left: 20px;
   }
   
-  /* Clear floats for mobile */
   @media (max-width: 768px) {
     #pills-characters, 
     #pills-teams {
@@ -171,3 +221,6 @@ html, body {
       float: none;
     }
   }
+
+  
+

@@ -74,18 +74,6 @@ async function getUserCharacters() {
             throw new Error('Invalid character data received: ' + JSON.stringify(characters));
         }
 
-        const charactersList = document.getElementById('charactersList');
-        if (!charactersList) {
-            throw new Error('Characters list element not found');
-        }
-
-        charactersList.innerHTML = '';
-        characters.forEach(character => {
-            const li = document.createElement('li');
-            li.textContent = character;
-            charactersList.appendChild(li);
-        });
-
         await generateTeams();
     } catch (error) {
         console.error('Character fetch error:', error);
@@ -96,7 +84,6 @@ async function getUserCharacters() {
 }
 
 
-// Generate optimized teams
 async function generateTeams() {
     try {
         console.log("Fetching teams...");
@@ -132,14 +119,14 @@ async function generateTeams() {
             </li>
         `).join('');
 
-        // Save teams and explanations to sessionStorage
         sessionStorage.setItem('teamsContent', teamsHTML);
         sessionStorage.setItem('explanationContent', data.explanation || '');
+        toggleVisibility('characterSelectionContainer', false); 
+        displayTeams(data.teams, data.explanation);
 
         toggleVisibility('loading', false);
 
-        toggleVisibility('done', true);
-        console.log('Teams generated successfully and saved for new tab.');
+        console.log('Teams generated successfully and saved');
     } catch (error) {
         console.error('Error generating teams:', error);
         alert('Failed to generate teams: ' + error.message);
@@ -174,7 +161,6 @@ async function fetchCharacters() {
     }
 }
 
-
 async function loadCharacterIcons() {
     const characterIconsContainer = document.getElementById('characterIcons');
     if (!characterIconsContainer) {
@@ -205,46 +191,33 @@ async function loadCharacterIcons() {
         name.classList.add('character-name');
         name.textContent = character;
 
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.classList.add('character-checkbox');
-        checkbox.value = character; // Add this line to store the character name
-        checkbox.addEventListener('change', () => toggleCharacterSelection(character, checkbox.checked));
-
-
         card.appendChild(img);
         card.appendChild(name);
-        card.appendChild(checkbox);
+
+        card.addEventListener('click', () => toggleCharacterSelection(character, !selectedCharacters.has(character)));
+
         grid.appendChild(card);
     });
 
     characterIconsContainer.appendChild(grid);
-
-    const confirmButton = document.createElement('button');
-    confirmButton.id = 'confirmSelection';
-    confirmButton.classList.add('btn', 'btn-primary', 'mt-3');
-    confirmButton.textContent = 'Confirm Selection and Generate Teams';
-    confirmButton.addEventListener('click', generateTeamsFromSelection);
-
-    characterIconsContainer.appendChild(confirmButton);
 }
 
-// Function to toggle character selection with better visual feedback
+
 const selectedCharacters = new Set();
 
-function toggleCharacterSelection(character, isChecked) {
-    const card = document.querySelector(`.character-card input[value="${character}"]`).closest('.character-card');
+function toggleCharacterSelection(character, isSelected) {
+    const card = [...document.querySelectorAll('.character-card')]
+        .find(el => el.textContent.trim() === character);
+    
     if (!card) return;
 
-    if (isChecked) {
+    if (isSelected) {
         selectedCharacters.add(character);
         card.classList.add('selected');
     } else {
         selectedCharacters.delete(character);
         card.classList.remove('selected');
     }
-
-    // Update confirm button text
     const confirmButton = document.getElementById('confirmSelection');
     if (confirmButton) {
         confirmButton.disabled = selectedCharacters.size < 4;
@@ -253,8 +226,6 @@ function toggleCharacterSelection(character, isChecked) {
 }
 
 
-
-// Function to generate teams based on selected characters
 async function generateTeamsFromSelection() {
     if (selectedCharacters.size < 4) {
         alert('Please select at least four characters.');
@@ -278,13 +249,10 @@ async function generateTeamsFromSelection() {
         }
 
         const data = await response.json();
-        console.log('Server response:', data);
 
         if (!data.teams || !Array.isArray(data.teams)) {
             throw new Error('Invalid teams data format: ' + JSON.stringify(data));
         }
-
-        // Save teams and explanations to sessionStorage
         const teamsHTML = data.teams.map(team => `
             <li>
                 <h3>${team['Team Name']}</h3>
@@ -300,15 +268,19 @@ async function generateTeamsFromSelection() {
                 </div>
             </li>
         `).join('');
+        console.log("TEAMS", teamsHTML);
+        console.log("EXPLANATION:", data.explanation);
 
-        sessionStorage.setItem('teamsContent', teamsHTML);
-        sessionStorage.setItem('explanationContent', data.explanation || '');
+        localStorage.setItem('teamsContent', teamsHTML);
+        localStorage.setItem('explanationContent', data.explanation || '');
+        toggleVisibility('characterSelectionContainer', false);
 
-        // Display teams and switch to teams tab
         displayTeams(data.teams, data.explanation);
         const teamsTab = document.getElementById('pills-teams-tab');
         const bsTab = new bootstrap.Tab(teamsTab);
         bsTab.show();
+        
+
 
     } catch (error) {
         console.error('Error generating teams:', error);
@@ -319,75 +291,89 @@ async function generateTeamsFromSelection() {
 }
 
 
-
-// Function to display generated teams and explanation
 function displayTeams(teams, explanation) {
+    console.log("DisplayTeams called with:", { teams, explanation });
     const teamsList = document.getElementById("teamsList");
+    const teamsContainer = document.getElementById('teams-container');
 
-    if (teamsList) {
-        console.log("Received explanation:", explanation); 
-
-        let explanationSections = {};
-
-        // Extract explanations properly
-        if (explanation) {
-            const explanationParts = explanation.split(/\*\*Team \d+: (.*?)\*\*/);
-            console.log("📝 Extracted parts:", explanationParts);
-
-            for (let i = 1; i < explanationParts.length; i += 2) {
-                const teamKey = explanationParts[i].trim();
-                const teamExplanation = explanationParts[i + 1]?.trim() || "No explanation available.";
-                explanationSections[teamKey] = teamExplanation;
-                console.log(`Matched Explanation for ${teamKey}:`, teamExplanation);
-            }
-        }
-
-        teamsList.innerHTML = teams.map((team, index) => {
-            const teamName = `<h3>${team["Team Name"]}</h3>`;
-
-            // Generate character icons with roles
-            const characterDisplay = team.Characters.map(char => `
-                <div class="character-entry">
-                    <img src="${LOCAL_ASSETS_PATH}/${char.Name.toLowerCase().replace(/ /g, "_")}/icon-big.png" 
-                         alt="${char.Name}" 
-                         class="character-icon">
-                    <span class="character-name">${char.Name} (${char.Role})</span>
-                </div>
-            `).join("");
-
-            // Construct team key based on character names
-            const teamKey = team.Characters.map(c => c.Name).join(", ");
-            console.log("🔹 Looking for explanation with key:", teamKey);
-
-            // Match the explanation with the team
-            const formattedExplanation = explanationSections[teamKey]
-                ? `<p>${explanationSections[teamKey].replace(/\n/g, "<br>")}</p>`
-                : "<p>No explanation available.</p>";
-
-            return `
-                <li class="team-card">
-                    ${teamName}
-                    <div class="character-icons">${characterDisplay}</div>
-                    <div class="team-explanation">${formattedExplanation}</div>
-                </li>
-            `;
-        }).join("");
-
-        // Show the teams container
-        toggleVisibility("teams-container", true);
+    if (!teamsList) {
+        console.error("teamsList element not found in DOM");
+        return;
     }
+
+    if (!teamsContainer) {
+        console.error("teams-container element not found in DOM");
+        return;
+    }
+
+    console.log("Received teams:", teams);
+    console.log("Received explanation:", explanation);
+
+    if (!teams || teams.length === 0) {
+        teamsList.innerHTML = "<p>No teams generated.</p>";
+        return;
+    }
+
+    let explanationSections = {};
+
+    if (explanation) {
+        const explanationParts = explanation.split(/\*\*Team \d+:\s?(.*?)\*\*/is);
+
+        for (let i = 1; i < explanationParts.length; i += 2) {
+            const teamKey = explanationParts[i].trim();
+            const teamExplanation = explanationParts[i + 1]?.trim() || "No explanation available.";
+            explanationSections[teamKey] = teamExplanation;
+        }
+    }
+    teamsList.innerHTML = teams.map((team) => {
+        const teamName = `<h3>${team["Team Name"]}</h3>`;
+
+        const characterDisplay = team.Characters.map(char => `
+            <div class="character-entry">
+                <img src="${LOCAL_ASSETS_PATH}/${char.Name.toLowerCase().replace(/ /g, "_")}/icon-big.png" 
+                     alt="${char.Name}" 
+                     class="character-icon">
+                <span class="character-name">${char.Name} (${char.Role})</span>
+            </div>
+        `).join("");
+        const normalizeKey = (key) => key.replace(/\s*,\s*/g, ', ').trim();
+
+        const teamKey = normalizeKey(team.Characters.map(c => `${c.Name} (${c.Role})`).join(", "));
+        console.log("Looking for explanation with key:", teamKey);
+
+        const formattedExplanation = explanationSections[teamKey]
+            ? `<p>${explanationSections[teamKey].replace(/\n/g, "<br>")}</p>`
+            : "<p>No explanation available.</p>";
+        console.log(formattedExplanation);
+        return `
+            <li class="team-card">
+                ${teamName}
+                <div class="character-icons">${characterDisplay}</div>
+                <div class="team-explanation">${formattedExplanation}</div>
+            </li>
+        `;
+    }).join("");
+
+    if (teamsContainer) {
+        teamsContainer.style.display = 'block';
+    }
+    
+    const trigger = document.getElementById('pills-teams-tab');
+    if (trigger) {
+        new bootstrap.Tab(trigger).show();
+    }
+
+    toggleVisibility("teams-container", true);
 }
 
 
 
 
 
-// Event listener for the generate teams button
-document.getElementById('generateTeamsButton')?.addEventListener('click', generateTeamsFromSelection);
+document.getElementById('confirmSelection')?.addEventListener('click', generateTeamsFromSelection);
 
-// Load character icons when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterIcons();
-    toggleVisibility('characterSelection', true);
+    toggleVisibility('characterSelectionContainer', true);
 });
 

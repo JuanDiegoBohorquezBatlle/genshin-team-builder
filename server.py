@@ -7,7 +7,7 @@ import genshin
 import pandas as pd
 import json 
 import time 
-from search import explain_teams_with_gemini
+from searchv2 import explain_teams
 from fastapi.staticfiles import StaticFiles
 
 start= time.time()
@@ -41,7 +41,7 @@ async def hoyolab_login(request: HoYoLABLoginRequest):
         cookies['ltuid_v2'] = ltuid_v2
         cookies['ltoken_v2'] = ltoken_v2
         cookies['ltmid_v2'] = ltmid_v2
-        # Return cookies in the response to the frontend
+
         print(cookies)
         return cookies
 
@@ -51,9 +51,11 @@ async def hoyolab_login(request: HoYoLABLoginRequest):
         print(f"Error occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+def normalise(name):
+    return name.replace(" ", "-")
+
 @app.get("/get_characters")
 async def get_characters():
-    # Check if cached data exists
     try:
         with open('cached_characters.json', 'r') as f:
             return json.load(f)
@@ -67,133 +69,162 @@ async def get_characters():
         return character_names
 
 
+
 def load_character_data():
     df = pd.read_csv('actual.csv')
     if df['Character'].duplicated().any():
         raise ValueError("Duplicate characters found")
 
     
-    df['Best Role'] = df['Best Role'].str.split('/')  # Split roles directly
-    character_data = df.set_index('Character')[['Best Role', 'Role Tier', 'Element', 'Nightsoul']].to_dict(orient='index')
+    df['Best Role'] = df['Best Role'].str.split('/')  
+    character_data = df.set_index('Character')[['Best Role', 'Role Tier', 'Element', 'Nightsoul','Off-field']].to_dict(orient='index')
     
     for char in character_data:
         character_data[char]['roles'] = character_data[char]['Best Role']
         character_data[char]['tier'] = character_data[char]['Role Tier']
         character_data[char]['element'] = character_data[char]['Element']
         character_data[char]['nightsoul'] = character_data[char]['Nightsoul']
+        character_data[char]['off_field'] = str(character_data[char]['Off-field']).strip().upper() == "TRUE"
         del character_data[char]['Best Role']
         del character_data[char]['Role Tier']
         del character_data[char]['Element']
         del character_data[char]['Nightsoul']
+        del character_data[char]['Off-field']
 
     return character_data
+
+def expand_traveler_variants(user_characters, character_data):
+    traveler_variants = [
+        'Traveler-Anemo',
+        'Traveler-Geo',
+        'Traveler-Electro',
+        'Traveler-Dendro',
+        'Traveler-Hydro',
+        'Traveler-Pyro'
+    ]
+    new_characters = []
+    for char in user_characters:
+        if char == 'Traveler':
+            new_characters.extend(traveler_variants)
+        else:
+            new_characters.append(char)
+    return new_characters
 
 
 
 def tier_sort(character_list, character_data):
-    tier_order = {"SS": 150, "S": 100, "A": 50, "B": 20, "C": 10}
+    tier_order = {"SS": 120, "S": 100, "A": 70, "B": 20, "C": 10}
     return sorted(character_list, key=lambda char: tier_order[character_data[char]['tier']], reverse=True)
 
-def calculate_resonance_score(team_elements):
-    """Calculate team resonance score based on element combinations."""
-    element_counts = {}
-    for element in team_elements:
-        element_counts[element] = element_counts.get(element, 0) + 1
-    
-    score = 0
-    
-    # Score different resonances
-    for element, count in element_counts.items():
-        if count >= 2:
-            if element == "Pyro":  # ATK +25%
-                score += 20
-            elif element == "Hydro":  # HP +25%
-                score += 15
-            elif element == "Cryo":  # CRIT Rate +15%
-                score += 20
-            elif element == "Electro":  # Energy Recharge
-                score += 15
-            elif element == "Geo":  # Shield Strength + DMG
-                score += 15
-            elif element == "Anemo":  # Stamina & Movement
-                score += 10
-            elif element == "Dendro":  # EM +50
-                score += 15
-    
-    # Core reaction combinations
-    if "Hydro" in element_counts and "Pyro" in element_counts:  # Vaporize
-        score += 25
-    if "Cryo" in element_counts and "Pyro" in element_counts:  # Melt
-        score += 25
-    if "Cryo" in element_counts and "Hydro" in element_counts:  # Freeze
-        score += 10
-    if "Electro" in element_counts and "Pyro" in element_counts:  # overload 
-        score += 5  
-    if "Electro" in element_counts and "Hydro" in element_counts:  # Electrocharged
-        score += 5
-    
-    if "Anemo" in element_counts and "Hydro" or "Pyro" or "Electro" in element_counts: #swirl 
-        score+=15 
-    
-    if "Anemo" in element_counts and "Geo" or "Dendro" in element_counts:
-        score-=5 
-
-    if "Dendro" in element_counts:
-        # Hyperbloom (Dendro + Hydro + Electro)
-        if "Hydro" in element_counts and "Electro" in element_counts:
-            score += 35  
+def calculate_resonance_score(team_elements, team, char_cache):
+        element_counts = {}
+        for element in team_elements:
+            element_counts[element] = element_counts.get(element, 0) + 1
         
-        # Aggravate (Dendro + Electro)
-        elif "Electro" in element_counts:
-            score += 15 
-            
-        # Bloom base reaction
-        elif "Hydro" in element_counts:
-            score += 5
-            
-        # Burning
-        elif "Pyro" in element_counts:
-            score += 5 
-            
-        # Spread (Dendro + Electro application)
-        if "Electro" in element_counts:
-            score += 10  
+        score = 0
+        
+        pyro_count = element_counts.get("Pyro", 0)
+        hydro_count = element_counts.get("Hydro", 0)
+        cryo_count = element_counts.get("Cryo", 0)
+        electro_count = element_counts.get("Electro", 0)
+        geo_count = element_counts.get("Geo", 0)
+        anemo_count = element_counts.get("Anemo", 0)
+        dendro_count = element_counts.get("Dendro", 0)
+        
+        #Resonances 
+        if pyro_count >= 2: score += 20
+        if hydro_count >= 2: score += 15
+        if cryo_count >= 2: score += 20
+        if electro_count >= 2: score += 15
+        if geo_count >= 2: score += 15
+        if anemo_count >= 2: score += 10
+        if dendro_count >= 2: score += 15
 
-    return score
+        #Reactions
+        if hydro_count and pyro_count: score += 25  # Vaporize
+        if cryo_count and pyro_count: score += 25   # Melt
+        if cryo_count and hydro_count: score += 8  # Freeze
+        if electro_count and pyro_count: score += 8  # Overload
+        dendro_off_field = any(
+            char_cache[char]['element'] == 'Dendro' and char_cache[char].get('off_field', False)
+            for char in team
+    )
+        if electro_count and hydro_count and dendro_off_field:
+         score += 45  #hyperbloom
+        if hydro_count and dendro_count: score +=15 #bloom 
+        if electro_count and dendro_count: score+=8 #quicken
+
+        if geo_count and (hydro_count or pyro_count or electro_count):
+            score +=5
+        
+        if anemo_count and (hydro_count or pyro_count or electro_count): #swirl
+            score += 15
+        if anemo_count and (geo_count or dendro_count):
+            score -= 15
+            
+        return score
+
 
 
 # generate teams 
+from itertools import combinations
+
 def generate_teams_optimized(user_characters, character_data, num_teams, max_teams_per_dps):
-    roles = {
-        "Main DPS": {},
-        "Sub-DPS": {},
-        "Support": {}
-    }
+    expanded_characters = expand_traveler_variants(user_characters, character_data)
+    print(expanded_characters)
     
+    # Build character cache and related dictionaries.
+    char_cache = {}
     char_elements = {}
-    char_nightsoul = {} 
+    char_nightsoul = {}
     main_dps_usage = {}
     
-    for char in user_characters:
-        if char in character_data:
-            char_roles = character_data[char]['roles']
-            char_tier = character_data[char]['tier']
-            char_element = character_data[char]['element']
-            char_nightsoul_status = character_data[char]['nightsoul']
-            tier_value = {"SS": 150, "S": 120, "A": 90, "B": 50, "C": 20}[char_tier]
-            
-            char_elements[char] = char_element
-            char_nightsoul[char] = char_nightsoul_status
-            for role in char_roles:
-                roles[role][char] = tier_value
-                if role == 'Main DPS':
-                    main_dps_usage[char] = 0 
+    for char in expanded_characters:
+        if char not in character_data:
+            continue
+        
+        info = character_data[char]
+        roles = info['roles']
+        tier = info['tier']
+        element = info['element']
+        nightsoul = info['nightsoul']
+        tier_value = {"SS": 130, "S": 100, "A": 70, "B": 50, "C": 20}[tier]
+        
+        char_cache[char] = {
+            'roles': set(roles),
+            'element': element,
+            'nightsoul': nightsoul,
+            'tier_value': tier_value,
+            'off_field': info.get('off_field', False),  # New field from CSV
+            'is_main_dps': 'Main DPS' in roles,
+            'is_sub_dps': 'Sub-DPS' in roles,
+            'is_support': 'Support' in roles
+        }
 
-    teams = []
-    team_scores = []
+        char_elements[char] = element
+        char_nightsoul[char] = nightsoul
+        if char_cache[char]['is_main_dps']:
+            main_dps_usage[char] = 0
 
+    # Build lists for each role.
+    role_chars = {
+        'Main DPS': [char for char in char_cache if char_cache[char]['is_main_dps']],
+        'Sub-DPS': [char for char in char_cache if char_cache[char]['is_sub_dps']],
+        'Support': [char for char in char_cache if char_cache[char]['is_support']]
+    }
+    for role in role_chars:
+        role_chars[role].sort(key=lambda x: char_cache[x]['tier_value'], reverse=True)
+    
+    def calculate_off_field_bonus(team):
+        off_field_count = sum(1 for char in team if char_cache[char].get('off_field', False))
+        bonus = 0
+        if off_field_count == 2:
+            bonus = 10  # You can adjust this bonus value as needed.
+        elif off_field_count == 3:
+            bonus = 15
+        return bonus
+    
     def calculate_nightsoul_score(team):
-        """Calculate bonus score based on number of Nightsoul characters"""
         nightsoul_count = sum(1 for char in team if char_nightsoul[char])
         if nightsoul_count == 4:
             return 20
@@ -203,117 +234,77 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
             return 10
         return 0
 
-    def verify_roles(team):
-        """Verify that team has all required roles filled"""
-        has_main_dps = False
-        has_sub_dps = False
-        support_count = 0
-        
-        for char in team:
-            if any(char in roles[role] for role in character_data[char]['roles']):
-                if 'Main DPS' in character_data[char]['roles']:
-                    has_main_dps = True
-                if 'Sub-DPS' in character_data[char]['roles']:
-                    has_sub_dps = True
-                if 'Support' in character_data[char]['roles']:
-                    support_count += 1
-        
-        return has_main_dps and has_sub_dps and support_count >= 1
+    def calculate_team_score(team):
+        elements = [char_cache[char]['element'] for char in team]
+        base_score = sum(char_cache[char]['tier_value'] for char in team)
+        resonance_score = calculate_resonance_score(elements, team, char_cache)
+        nightsoul_score = calculate_nightsoul_score(team)
+        off_field_bonus = calculate_off_field_bonus(team)
+        return base_score + resonance_score + nightsoul_score + off_field_bonus
 
-    def get_main_dps(team):
-        """Return the Main DPS character from the team"""
-        for char in team:
-            if 'Main DPS' in character_data[char]['roles']:
-                return char
-        return None
-
-    def is_unique_team(new_team, existing_teams):
-        """Check if the team composition is unique (regardless of order)"""
-        new_team_set = set(new_team)
-        for team in existing_teams:
-            if set(team) == new_team_set:
-                return False
+    seen_teams = set()
+    def is_unique_team(team):
+        team_key = tuple(sorted(char.replace('Traveler-', 'Traveler') for char in team))
+        if team_key in seen_teams:
+            return False
+        seen_teams.add(team_key)
         return True
 
-    def try_build_team(base_chars=None, current_score=0):
-        if base_chars is None:
-            base_chars = []
-            
-        team = base_chars.copy()
-        needed_roles = ["Main DPS", "Sub-DPS", "Support", "Support"]
-        needed_roles = needed_roles[len(base_chars):]
-        if len(team) == 4:
-            main_dps_char = get_main_dps(team)
-            if main_dps_char and main_dps_usage[main_dps_char] >= max_teams_per_dps:
-                return None, -1
-        
-        team_elements = [char_elements[char] for char in team]
-        
-        # Calculate score only once per character
-        for role, char in zip(needed_roles, team[len(base_chars):]):
-            if char in roles[role]:
-                current_score += roles[role][char] 
-                
-        if len(team) == 4:
-            current_score += calculate_resonance_score(team_elements)
-            current_score += calculate_nightsoul_score(team)
-        
-        if len(team) == 4:
-            # Only return team if it meets role requirements and is unique
-            if verify_roles(team) and is_unique_team(team, teams):
-                return team, current_score
-            return None, -1
-
-        best_team = None
-        best_score = -1
-        
-        if len(team) >= 2:
-            has_main_dps = any('Main DPS' in character_data[char]['roles'] for char in team)
-            if not has_main_dps and 'Main DPS' not in needed_roles:
-                return None, -1
-        
-        for role in needed_roles:
-            for char in roles[role]:
-                # Check that character is available and not already in the team
-                if char in user_characters and char not in team:
-                    new_team = team + [char]
-                    new_score = current_score + roles[role][char] 
-                    
-                    complete_team, final_score = try_build_team(new_team, new_score)
-                    if complete_team and final_score > best_score:
-                        best_team = complete_team
-                        best_score = final_score
-        return best_team, best_score
-
-    # Generate specified number of teams
-    attempts = 0
-    max_attempts = num_teams * 5  # Prevent infinite loops if we can't find enough unique teams
-    while len(teams) < num_teams and attempts < max_attempts:
-        team, score = try_build_team()
-        if team:
-            main_dps_char = get_main_dps(team)
-            if main_dps_char:
-                main_dps_usage[main_dps_char] += 1
-            teams.append(team)
-            team_scores.append(score)
-        attempts += 1
+    collected_teams = []
     
-    sorted_teams = [x for _, x in sorted(zip(team_scores, teams), reverse=True)]
-    return sorted_teams
+    for main in role_chars['Main DPS']:
+        teams_for_main = []
+        sub_candidates = [char for char in role_chars['Sub-DPS'] if char != main]
+        support_candidates = [char for char in role_chars['Support'] if char != main]
+        
+        # Format A: 1 Main DPS + 2 Sub-DPS + 1 Support.
+        for subs in combinations(sub_candidates, 2):
+            for support in support_candidates:
+                if support in subs:
+                    continue
+                team = [main] + list(subs) + [support]
+                if not is_unique_team(team):
+                    continue
+                score = calculate_team_score(team)
+                teams_for_main.append((team, score))
+        
+        # Format B: 1 Main DPS + 1 Sub-DPS + 2 Supports.
+        for sub in sub_candidates:
+            for supports in combinations(support_candidates, 2):
+                team = [main, sub] + list(supports)
+                if not is_unique_team(team):
+                    continue
+                score = calculate_team_score(team)
+                teams_for_main.append((team, score))
+        
+        teams_for_main.sort(key=lambda x: x[1], reverse=True)
+        teams_for_main = teams_for_main[:max_teams_per_dps]
+        main_dps_usage[main] += len(teams_for_main)
+        collected_teams.extend(teams_for_main)
+    
+    collected_teams.sort(key=lambda x: x[1], reverse=True)
+    final_teams = [team for team, score in collected_teams][:num_teams]
+    return final_teams
+
+
+
+
 
 @app.post("/explain_teams_with_gemini")
 async def explain_teams_endpoint(teams: dict):
     try:
-        explanation = await explain_teams_with_gemini(teams['teams'])
+        explanation = await explain_teams(teams['teams'])
         return explanation
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/generate_teams")
 async def generate_teams():     
-    user_characters = await get_characters()
-    print(user_characters)
+    user_characters_raw = await get_characters()
+    user_characters = [normalise(name) for name in user_characters_raw]
     character_data = load_character_data()
+    user_characters = expand_traveler_variants(user_characters, character_data)
+
 
     # Generate teams
     recommended_teams = generate_teams_optimized(user_characters, character_data,6,2)
@@ -335,8 +326,7 @@ async def generate_teams():
         }
         teams_for_explanation.append(formatted_team)
 
-    # Call the explain function with Gemini
-    explanation = await explain_teams_with_gemini(teams_for_explanation)
+    explanation = await explain_teams(teams_for_explanation)
 
     t1 = time.time() - start
     print(f"Execution Time: {t1:.2f} seconds")
@@ -373,8 +363,7 @@ async def generate_teams_from_selection(request:Request):
         }
         teams_for_explanation.append(formatted_team)
 
-    # Call the explain function with Gemini
-    explanation = await explain_teams_with_gemini(teams_for_explanation)
+    explanation = await explain_teams(teams_for_explanation)
 
     t1 = time.time() - start
     print(f"Execution Time: {t1:.2f} seconds")

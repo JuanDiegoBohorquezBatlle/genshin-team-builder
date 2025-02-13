@@ -14,7 +14,6 @@ async def explain_teams_with_gemini(teams):
     with open(doc_path, "rb") as doc_file:
         doc_data = base64.standard_b64encode(doc_file.read()).decode("utf-8")
 
-    # Prepare the team list for the prompt
     team_text = "\n\n".join(
         f"{team['Team Name']}:\n" + "\n".join(
             [f" - {char['Name']} (Role: {char['Role']}, Element: {char['Element']}, Tier: {char['Tier']})"
@@ -22,7 +21,6 @@ async def explain_teams_with_gemini(teams):
         ) for team in teams
     )
 
-    # The prompt for Gemini
     prompt = f'''You are to create explanations for a given party from the game Genshin Impact.\
     First, get the characters abilities from the PDF and then generate a analysis, covering how their abilities compliment each other.\
     **Use ONLY the abilities described in the attached PDF. Do not infer abilities not mentioned.**
@@ -39,7 +37,6 @@ async def explain_teams_with_gemini(teams):
     - Role distribution for each team. 
     '''
 
-    # Send the request to Gemini API
     response = model.generate_content([
         {'mime_type': 'application/pdf', 'data': doc_data},
         prompt
