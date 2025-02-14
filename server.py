@@ -113,15 +113,46 @@ def expand_traveler_variants(user_characters, character_data):
 
 
 def tier_sort(character_list, character_data):
-    tier_order = {"SS": 120, "S": 100, "A": 70, "B": 20, "C": 10}
+    tier_order = {"SS": 100, "S": 80, "A": 50, "B": 20, "C": 10}
     return sorted(character_list, key=lambda char: tier_order[character_data[char]['tier']], reverse=True)
 
 def calculate_resonance_score(team_elements, team, char_cache):
         element_counts = {}
+        score = 0 
         for element in team_elements:
             element_counts[element] = element_counts.get(element, 0) + 1
-        
-        score = 0
+        for char in team: #character specific support 
+            if 'Support' in char_cache[char]['roles']:
+                # Chevreuse needs Pyro/Electro teammates
+                if char == 'Chevreuse':
+                    pyro = element_counts.get('Pyro', 0)
+                    electro = element_counts.get('Electro', 0)
+                    if pyro + electro < 3:
+                        score -= 100  
+                        
+                # Sara needs Electro DPS
+                elif char == 'Kujou Sara':
+                    if element_counts.get('Electro', 0) < 1:
+                        score -= 100
+                
+                elif char == 'Shenhe':
+                    if element_counts.get('Cryo', 0) < 1:
+                        score -= 100
+                
+                elif char == 'Faruzan':
+                    if element_counts.get('Anemo', 0) < 1:
+                        score -= 100
+                
+                elif char == 'Gorou':
+                    if element_counts.get('Geo', 0) < 1:
+                        score -= 100
+
+                elif char == 'Kuki Shinobu': #prioritize kuki over other electro supports like fischl in hyperbloom teams
+                    hydro = element_counts.get('Hydro',0)
+                    dendro = element_counts.get('Dendro',0)
+                    if hydro + dendro >= 2:
+                        score+=100 
+                
         
         pyro_count = element_counts.get("Pyro", 0)
         hydro_count = element_counts.get("Hydro", 0)
@@ -142,15 +173,15 @@ def calculate_resonance_score(team_elements, team, char_cache):
 
         #Reactions
         if hydro_count and pyro_count: score += 25  # Vaporize
-        if cryo_count and pyro_count: score += 25   # Melt
+        if cryo_count and pyro_count: score += 30   # Melt
         if cryo_count and hydro_count: score += 8  # Freeze
         if electro_count and pyro_count: score += 8  # Overload
         dendro_off_field = any(
-            char_cache[char]['element'] == 'Dendro' and char_cache[char].get('off_field', False)
+            char_cache[char]['element'] == 'Dendro' and char_cache[char].get('off_field', True)
             for char in team
     )
-        if electro_count and hydro_count and dendro_off_field:
-         score += 45  #hyperbloom
+        if electro_count and hydro_count and dendro_off_field and pyro_count==0: score += 60  #hyperbloom
+        if hydro_count and dendro_count and pyro_count: score += 20 #burgeon 
         if hydro_count and dendro_count: score +=15 #bloom 
         if electro_count and dendro_count: score+=8 #quicken
 
@@ -173,7 +204,14 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
     expanded_characters = expand_traveler_variants(user_characters, character_data)
     print(expanded_characters)
     
-    # Build character cache and related dictionaries.
+    INCOMPATIBLE_SUPPORTS = {
+        'Alhaitham': ['Bennett', 'Kaedehara-Kazuha', 'Xiangling'],
+        'Hu-Tao': ['Bennett'],
+        'Neuvillette': ['Bennett'],
+        'Lyney': ['Xingqiu', 'Yelan'],
+        'Tighnari': ['Xiangling'],
+        'Mavuika': ['Xiangling']
+    }
     char_cache = {}
     char_elements = {}
     char_nightsoul = {}
@@ -188,14 +226,15 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
         tier = info['tier']
         element = info['element']
         nightsoul = info['nightsoul']
-        tier_value = {"SS": 130, "S": 100, "A": 70, "B": 50, "C": 20}[tier]
+        off_field = info['off_field']
+        tier_value = {"SS": 100, "S": 80, "A": 50, "B": 20, "C": 10}[tier]
         
         char_cache[char] = {
             'roles': set(roles),
             'element': element,
             'nightsoul': nightsoul,
             'tier_value': tier_value,
-            'off_field': info.get('off_field', False),  # New field from CSV
+            'off_field': off_field,  
             'is_main_dps': 'Main DPS' in roles,
             'is_sub_dps': 'Sub-DPS' in roles,
             'is_support': 'Support' in roles
@@ -206,7 +245,6 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
         if char_cache[char]['is_main_dps']:
             main_dps_usage[char] = 0
 
-    # Build lists for each role.
     role_chars = {
         'Main DPS': [char for char in char_cache if char_cache[char]['is_main_dps']],
         'Sub-DPS': [char for char in char_cache if char_cache[char]['is_sub_dps']],
@@ -219,7 +257,7 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
         off_field_count = sum(1 for char in team if char_cache[char].get('off_field', False))
         bonus = 0
         if off_field_count == 2:
-            bonus = 10  # You can adjust this bonus value as needed.
+            bonus = 10  
         elif off_field_count == 3:
             bonus = 15
         return bonus
@@ -255,7 +293,9 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
     for main in role_chars['Main DPS']:
         teams_for_main = []
         sub_candidates = [char for char in role_chars['Sub-DPS'] if char != main]
-        support_candidates = [char for char in role_chars['Support'] if char != main]
+        incompatible = INCOMPATIBLE_SUPPORTS.get(main, [])
+        sub_candidates = [char for char in role_chars['Sub-DPS'] if char != main and char not in incompatible]
+        support_candidates = [char for char in role_chars['Support'] if char not in incompatible]
         
         # Format A: 1 Main DPS + 2 Sub-DPS + 1 Support.
         for subs in combinations(sub_candidates, 2):
@@ -263,6 +303,8 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
                 if support in subs:
                     continue
                 team = [main] + list(subs) + [support]
+                if len(set(team)) != 4:
+                    continue
                 if not is_unique_team(team):
                     continue
                 score = calculate_team_score(team)
@@ -272,6 +314,8 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
         for sub in sub_candidates:
             for supports in combinations(support_candidates, 2):
                 team = [main, sub] + list(supports)
+                if len(set(team)) != 4:
+                    continue
                 if not is_unique_team(team):
                     continue
                 score = calculate_team_score(team)
@@ -284,6 +328,10 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
     
     collected_teams.sort(key=lambda x: x[1], reverse=True)
     final_teams = [team for team, score in collected_teams][:num_teams]
+    if not final_teams and len(expanded_characters) >= 4:
+        unique_characters = set(expanded_characters)
+        fallback_team = tier_sort(unique_characters, character_data)[:4]
+        final_teams = [fallback_team]
     return final_teams
 
 

@@ -36,7 +36,7 @@ Ganyu,Main DPS,A,Amos' Bow,Cryo,FALSE,FALSE
 Gorou,Support,B,Favonius Warbow,Geo,FALSE,TRUE
 Hu Tao,Main DPS,S,Staff of Homa,Pyro,FALSE,FALSE
 Jean,Support,S,Freedom-Sworn,Anemo,FALSE,TRUE
-Kaedehara Kazuha,Support,SS,Freedom-Sworn,Anemo,FALSE,TRUE
+Kaedehara-Kazuha,Support,SS,Freedom-Sworn,Anemo,FALSE,TRUE
 Kaveh,Main DPS,C,,Dendro,FALSE,FALSE
 Kaeya,Sub-DPS,C,Mistsplitter,Cryo,FALSE,TRUE
 Kachina,Support,C,Black Tassel,Geo,TRUE,FALSE
@@ -45,8 +45,8 @@ Kinich,Main DPS,S,,Dendro,TRUE,FALSE
 Kirara,Support,B,Favonius Sword,Dendro,FALSE,TRUE
 Klee,Main DPS,C,Lost Prayer,Pyro,FALSE,FALSE
 Kokomi,Support,S,Everlasting Moonglow,Hydro,FALSE,TRUE
-Kujou Sara,Support,A,Skyward Harp,Electro,FALSE,TRUE
-Kuki Shinobu,Support,S,Freedom-Sworn,Electro,FALSE,TRUE
+Kujou-Sara,Support,A,Skyward Harp,Electro,FALSE,TRUE
+Kuki-Shinobu,Support,S,Freedom-Sworn,Electro,FALSE,TRUE
 Layla,Support,B,,Cryo,FALSE,TRUE
 Lisa,Support,B,Thrilling Tales,Electro,FALSE,TRUE
 Lynette,Sub-DPS,B,Favonius Sword,Anemo,FALSE,FALSE

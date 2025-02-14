@@ -5,7 +5,7 @@ API_KEY = 'AIzaSyBtZYP4S2cSfpKIAG5XavaWC8Zsa1WUioY'
 
 genai.configure(api_key=API_KEY)
 
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.0-flash")
 
 async def explain_teams(teams): 
     character_data_path='characters.json'
@@ -39,24 +39,27 @@ async def explain_teams(teams):
                 team_text += f" - {char_name} (Data not found!)\n"
 
     prompt = f'''
-        You are an expert Genshin Impact team strategist. Based solely on the given team composition and character details, generate a structured explanation that covers elemental synergies, valid reactions, role distribution, resource management, and optimal artifact sets.
+        You are an expert Genshin Impact team strategist. Based solely on the given team composition and character details, generate a structured explanation that covers elemental synergies, valid playstyles, role distribution, resource management (based on characters' energy requirements), and optimal artifact sets.
 
         Guidelines:
-        1. Only mention elemental reactions that are directly supported by the teams elements.
-        2. Do NOT mention any reactions if the team does not have the necessary elements. For example, if no team member provides Electro, do not mention Hyperbloom, Electro-Charged, or Overload.
-        3. Allowed reactions (only mention these when applicable):
+        1. Allowed reactions (DO NOT mention unrelated reactions. DO NOT mix up these reactions.):
         - Vaporize = Hydro + Pyro
         - Freeze = Cryo + Hydro
         - Melt = Cryo + Pyro
         - Bloom = Dendro + Hydro
         - Quicken = Dendro + Electro
-        - Hyperbloom = Electro + Dendro + Hydro. If this occurs, bloom and quicken should not be mentioned.
+        - Hyperbloom = Electro + Dendro + Hydro. If this occurs, bloom or quicken should not be mentioned.
+        - Burgeon = Pyro + Dendro + Hydro 
         - Electro-Charged = Hydro + Electro
         - Overload = Pyro + Electro
         - Swirl = triggered only with Pyro/Hydro/Electro/Cryo
         - Crystallize = triggered only with Pyro/Hydro/Electro/Cryo
-        4. Do not hallucinate or introduce additional reactions. Prioritise information given in the text alongside teams whenever possible.
-        5. Format output as Team X: character1 (Role), Character2 (Role), Character3(Role), Character4 (Role)
+        2. The following is an example explanation generation:
+        (GENERATE ALL TEAMS LIKE THIS, and always start with Team 1)**Team 1: Mavuika (Main DPS), Citlali (Sub-DPS), Xilonen (Support), Bennett (Support)** \
+        Explanation: Both Citlali and Xilonen gain and lose Nightsoul points so quickly, allowing Mavuika to continuously cast her Elemental Burst with ease. Bennett provides healing and ATK buff through his Burst. \
+        Role distribution: Citlali is a notable off-field Cryo driver who can help Mavuika continuously trigger Melt on most of her attacks. On top of that, Citlali reduces enemies’ resistance to Pyro by 20% through her Ascension passive. Xilonen, on the other hand, takes the field for a few seconds and shreds enemies' RES, allowing your attacks to deal more manage.\
+        Resource management: Fighting Spirit generation is crucial for Mavuika, but that is not an issue with both Citlali and Xilonen, who both have Nightsoul, in the team. \
+        Recommended artifact set: Mavuika (Obsidian Codex), Citlali (Scroll of the Hero of Cinder City), Xilonen (Scroll of the Hero of Cinder City), Bennett (Noblesse Oblige)
 
         Teams for Analysis:
         {team_text}

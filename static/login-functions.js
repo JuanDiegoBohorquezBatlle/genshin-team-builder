@@ -290,6 +290,12 @@ async function generateTeamsFromSelection() {
     }
 }
 
+function canonicalizeTeamKey(key) {
+    return key         
+      .replace(/\//g, ', ')       
+      .replace(/\s*,\s*/g, ', ')                 
+      .trim();
+  }
 
 function displayTeams(teams, explanation) {
     console.log("DisplayTeams called with:", { teams, explanation });
@@ -320,11 +326,12 @@ function displayTeams(teams, explanation) {
         const explanationParts = explanation.split(/\*\*Team \d+:\s?(.*?)\*\*/is);
 
         for (let i = 1; i < explanationParts.length; i += 2) {
-            const teamKey = explanationParts[i].trim();
+            const teamKey = canonicalizeTeamKey(explanationParts[i].trim());
             const teamExplanation = explanationParts[i + 1]?.trim() || "No explanation available.";
             explanationSections[teamKey] = teamExplanation;
         }
     }
+    console.log(explanationSections);
     teamsList.innerHTML = teams.map((team) => {
         const teamName = `<h3>${team["Team Name"]}</h3>`;
 
@@ -336,9 +343,8 @@ function displayTeams(teams, explanation) {
                 <span class="character-name">${char.Name} (${char.Role})</span>
             </div>
         `).join("");
-        const normalizeKey = (key) => key.replace(/\s*,\s*/g, ', ').trim();
 
-        const teamKey = normalizeKey(team.Characters.map(c => `${c.Name} (${c.Role})`).join(", "));
+        const teamKey = canonicalizeTeamKey(team.Characters.map(c => `${c.Name} (${c.Role})`).join(", "));
         console.log("Looking for explanation with key:", teamKey);
 
         const formattedExplanation = explanationSections[teamKey]
