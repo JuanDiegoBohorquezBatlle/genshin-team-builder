@@ -3,10 +3,10 @@ Albedo,Sub-DPS,B,Cinnabar Spindle,Geo,FALSE,TRUE
 Alhaitham,Main DPS,S,,Dendro,FALSE,FALSE
 Aloy,Main DPS,C,,Cryo,FALSE,FALSE
 Amber,Sub-DPS,C,Elegy for the End,Pyro,FALSE,TRUE
-Arataki Itto,Main DPS,B,,Geo,FALSE,FALSE
+Arataki-Itto,Main DPS,B,,Geo,FALSE,FALSE
 Arlecchino,Main DPS,SS,,Pyro,FALSE,FALSE
-Ayaka,Main DPS,A,,Cryo,FALSE,FALSE
-Ayato,Main DPS,A,,Hydro,FALSE,FALSE
+Kamisato-Ayaka,Main DPS,A,,Cryo,FALSE,FALSE
+KamisatoAyato,Main DPS,A,,Hydro,FALSE,FALSE
 Baizhu,Support ,S,,Dendro,FALSE,TRUE
 Barbara,Support,C,Thrilling Tales,Hydro,FALSE,TRUE
 Beidou,Sub-DPS,A,Wolf's Gravestone,Electro,FALSE,TRUE
@@ -34,7 +34,7 @@ Furina,Support,SS,Splendor of Tranquil Waters,Hydro,FALSE,TRUE
 Gaming,Sub-DPS,A,The Bell,Pyro,FALSE,FALSE
 Ganyu,Main DPS,A,Amos' Bow,Cryo,FALSE,FALSE
 Gorou,Support,B,Favonius Warbow,Geo,FALSE,TRUE
-Hu Tao,Main DPS,S,Staff of Homa,Pyro,FALSE,FALSE
+Hu-Tao,Main DPS,S,Staff of Homa,Pyro,FALSE,FALSE
 Jean,Support,S,Freedom-Sworn,Anemo,FALSE,TRUE
 Kaedehara-Kazuha,Support,SS,Freedom-Sworn,Anemo,FALSE,TRUE
 Kaveh,Main DPS,C,,Dendro,FALSE,FALSE
@@ -63,13 +63,13 @@ Ningguang,Main DPS,C,Lost Prayer,Geo,FALSE,FALSE
 Noelle,Main DPS,B,Redhorn Stonethresher,Geo,FALSE,TRUE
 Ororon,Sub-DPS,A,,Electro,FALSE,TRUE
 Qiqi,Support,C,Sacrificial Sword,Cryo,FALSE,TRUE
-Raiden Shogun,Main DPS/Sub-DPS/Support,SS,Engulfing Lightning,Electro,FALSE,TRUE
+Raiden-Shogun,Main DPS/Sub-DPS/Support,SS,Engulfing Lightning,Electro,FALSE,TRUE
 Razor,Main DPS,C,Wolf's Gravestone,Electro,FALSE,FALSE
 Rosaria,Sub-DPS,A,Staff of Homa,Cryo,FALSE,TRUE
 Sayu,Support,B,Wolf's Gravestone,Anemo,FALSE,TRUE
 Sethos,Main DPS,B,,Electro,FALSE,FALSE
 Shenhe,Support,S,Calamity Queller,Cryo,FALSE,TRUE
-Shikanoin Heizou,Main DPS,C,,Anemo,FALSE,FALSE
+Shikanoin-Heizou,Main DPS,C,,Anemo,FALSE,FALSE
 Sigewinne,Support,B,,Hydro,FALSE,FALSE
 Sucrose,Support,S,Sacrificial Fragments,Anemo,FALSE,TRUE
 Tartaglia,Main DPS,A,Polar Star,Hydro,FALSE,FALSE
@@ -90,10 +90,11 @@ Xiao,Main DPS,A,Primordial Jade Winged-Spear,Anemo,FALSE,FALSE
 Xilonen,Support,SS,,Geo,TRUE,TRUE
 Xingqiu,Sub-DPS,SS,Sacrificial Sword,Hydro,FALSE,TRUE
 Xinyan,Support,C,Wolf's Gravestone,Pyro,FALSE,FALSE
-Yae Miko,Sub-DPS,S,Kagura's Verity,Electro,FALSE,TRUE
+Yae-Miko,Sub-DPS,S,Kagura's Verity,Electro,FALSE,TRUE
 Yanfei,Main DPS,C,Lost Prayer,Pyro,FALSE,FALSE
+Yumemizuki-Mizuki,Main DPS,B,,Anemo,FALSE,FALSE
 Yaoyao,Support,A,Black Tassel,Dendro,FALSE,TRUE
 Yelan,Sub-DPS,SS,Aqua Simulacra,Hydro,FALSE,TRUE
 Yoimiya,Main DPS,B,Thundering Pulse,Pyro,FALSE,FALSE
-Yun Jin,Support,S,Favonius Lance,Geo,FALSE,TRUE
+Yun-Jin,Support,S,Favonius Lance,Geo,FALSE,TRUE
 Zhongli,Support,SS,Black Tassel,Geo,FALSE,TRUE

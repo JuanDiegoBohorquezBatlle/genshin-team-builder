@@ -121,9 +121,14 @@ def calculate_resonance_score(team_elements, team, char_cache):
         score = 0 
         for element in team_elements:
             element_counts[element] = element_counts.get(element, 0) + 1
-        for char in team: #character specific support 
+        for char in team: #character specific support
+            if char == 'Fischl': #fischl not the best in hyperbloom
+                    hydro = element_counts.get('Hydro',0)
+                    dendro = element_counts.get('Dendro',0)
+                    if hydro + dendro >= 2:
+                        score-=60 
             if 'Support' in char_cache[char]['roles']:
-                # Chevreuse needs Pyro/Electro teammates
+                # Chev needs Pyro/Electro teammates
                 if char == 'Chevreuse':
                     pyro = element_counts.get('Pyro', 0)
                     electro = element_counts.get('Electro', 0)
@@ -151,7 +156,9 @@ def calculate_resonance_score(team_elements, team, char_cache):
                     hydro = element_counts.get('Hydro',0)
                     dendro = element_counts.get('Dendro',0)
                     if hydro + dendro >= 2:
-                        score+=100 
+                        score+=100
+
+
                 
         
         pyro_count = element_counts.get("Pyro", 0)
