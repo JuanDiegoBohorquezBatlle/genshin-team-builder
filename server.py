@@ -6,7 +6,8 @@ import asyncio
 import genshin
 import pandas as pd
 import json 
-import time 
+import time
+from itertools import combinations
 from searchv2 import explain_teams
 from fastapi.staticfiles import StaticFiles
 
@@ -23,7 +24,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# User data model for login
 class HoYoLABLoginRequest(BaseModel):
     username: str
     password: str
@@ -126,7 +126,7 @@ def calculate_resonance_score(team_elements, team, char_cache):
                     hydro = element_counts.get('Hydro',0)
                     dendro = element_counts.get('Dendro',0)
                     if hydro + dendro >= 2:
-                        score-=60 
+                        score-=50 
             if 'Support' in char_cache[char]['roles']:
                 # Chev needs Pyro/Electro teammates
                 if char == 'Chevreuse':
@@ -140,6 +140,7 @@ def calculate_resonance_score(team_elements, team, char_cache):
                     if element_counts.get('Electro', 0) < 1:
                         score -= 100
                 
+                # Shenhe is a cryo support 
                 elif char == 'Shenhe':
                     if element_counts.get('Cryo', 0) < 1:
                         score -= 100
@@ -182,7 +183,7 @@ def calculate_resonance_score(team_elements, team, char_cache):
         if hydro_count and pyro_count: score += 25  # Vaporize
         if cryo_count and pyro_count: score += 30   # Melt
         if cryo_count and hydro_count: score += 8  # Freeze
-        if electro_count and pyro_count: score += 8  # Overload
+        if electro_count and pyro_count: score += 15  # Overload
         dendro_off_field = any(
             char_cache[char]['element'] == 'Dendro' and char_cache[char].get('off_field', True)
             for char in team
@@ -192,7 +193,7 @@ def calculate_resonance_score(team_elements, team, char_cache):
         if hydro_count and dendro_count: score +=15 #bloom 
         if electro_count and dendro_count: score+=8 #quicken
 
-        if geo_count and (hydro_count or pyro_count or electro_count):
+        if geo_count and (hydro_count or pyro_count or electro_count): #crystallise 
             score +=5
         
         if anemo_count and (hydro_count or pyro_count or electro_count): #swirl
@@ -205,8 +206,6 @@ def calculate_resonance_score(team_elements, team, char_cache):
 
 
 # generate teams 
-from itertools import combinations
-
 def generate_teams_optimized(user_characters, character_data, num_teams, max_teams_per_dps):
     expanded_characters = expand_traveler_variants(user_characters, character_data)
     print(expanded_characters)
@@ -360,8 +359,6 @@ async def generate_teams():
     character_data = load_character_data()
     user_characters = expand_traveler_variants(user_characters, character_data)
 
-
-    # Generate teams
     recommended_teams = generate_teams_optimized(user_characters, character_data,6,2)
     print(recommended_teams)
     teams_for_explanation = []
