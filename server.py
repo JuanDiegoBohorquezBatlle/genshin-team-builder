@@ -126,31 +126,31 @@ def calculate_resonance_score(team_elements, team, char_cache):
                     hydro = element_counts.get('Hydro',0)
                     dendro = element_counts.get('Dendro',0)
                     if hydro + dendro >= 2:
-                        score-=50 
+                        score-=20 
             if 'Support' in char_cache[char]['roles']:
                 # Chev needs Pyro/Electro teammates
                 if char == 'Chevreuse':
                     pyro = element_counts.get('Pyro', 0)
                     electro = element_counts.get('Electro', 0)
                     if pyro + electro < 3:
-                        score -= 100  
+                        score -= 50  
                         
                 # Sara needs Electro DPS
                 elif char == 'Kujou Sara':
-                    if element_counts.get('Electro', 0) < 1:
+                    if element_counts.get('Electro', 0) < 2:
                         score -= 100
                 
                 # Shenhe is a cryo support 
                 elif char == 'Shenhe':
-                    if element_counts.get('Cryo', 0) < 1:
+                    if element_counts.get('Cryo', 0) < 2:
                         score -= 100
                 
                 elif char == 'Faruzan':
-                    if element_counts.get('Anemo', 0) < 1:
+                    if element_counts.get('Anemo', 0) < 2:
                         score -= 100
                 
                 elif char == 'Gorou':
-                    if element_counts.get('Geo', 0) < 1:
+                    if element_counts.get('Geo', 0) < 2:
                         score -= 100
 
                 elif char == 'Kuki Shinobu': #prioritize kuki over other electro supports like fischl in hyperbloom teams
@@ -188,7 +188,7 @@ def calculate_resonance_score(team_elements, team, char_cache):
             char_cache[char]['element'] == 'Dendro' and char_cache[char].get('off_field', True)
             for char in team
     )
-        if electro_count and hydro_count and dendro_off_field and pyro_count==0: score += 60  #hyperbloom
+        if electro_count and hydro_count and dendro_off_field and pyro_count==0: score += 50  #hyperbloom
         if hydro_count and dendro_count and pyro_count: score += 20 #burgeon 
         if hydro_count and dendro_count: score +=15 #bloom 
         if electro_count and dendro_count: score+=8 #quicken
@@ -271,11 +271,11 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
     def calculate_nightsoul_score(team):
         nightsoul_count = sum(1 for char in team if char_nightsoul[char])
         if nightsoul_count == 4:
-            return 20
+            return 30
         elif nightsoul_count == 3:
-            return 15
+            return 25
         elif nightsoul_count >= 2:
-            return 10
+            return 20
         return 0
 
     def calculate_team_score(team):
