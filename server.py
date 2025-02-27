@@ -232,16 +232,11 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
         },
         'Yoimiya': {
             'preferred': ['Yelan', 'Xingqiu', 'Bennett', 'Yun Jin', 'Furina'],
-            'excluded_elements': ['Geo']
+            'excluded_elements': ['Dendro', 'Geo']
         },
         'Chasca': {
             'preferred_elements': ['Pyro', 'Hydro', 'Electro', 'Cryo'],
             'excluded_elements': ['Anemo', 'Geo', 'Dendro']
-        },
-        'Kinich': {
-            'preferred': ['Emilie','Baizhu','Yaoyao', 'Bennett','Xiangling', 'Furina'],
-            'preferred_elements': ['Pyro', 'Dendro'],
-            'excluded_elemets': ['Electro', 'Hydro']
         }
     }
 
