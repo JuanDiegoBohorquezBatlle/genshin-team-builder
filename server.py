@@ -158,8 +158,6 @@ def calculate_resonance_score(team_elements, team, char_cache):
                     dendro = element_counts.get('Dendro',0)
                     if hydro + dendro >= 2:
                         score+=100
-
-
                 
         
         pyro_count = element_counts.get("Pyro", 0)
@@ -179,6 +177,8 @@ def calculate_resonance_score(team_elements, team, char_cache):
         if anemo_count >= 2: score += 10
         if dendro_count >= 2: score += 15
 
+
+
         #Reactions
         if hydro_count and pyro_count: score += 25  # Vaporize
         if cryo_count and pyro_count: score += 30   # Melt
@@ -197,9 +197,9 @@ def calculate_resonance_score(team_elements, team, char_cache):
             score +=5
         
         if anemo_count and (hydro_count or pyro_count or electro_count): #swirl
-            score += 15
+            score += 25
         if anemo_count and (geo_count or dendro_count):
-            score -= 15
+            score -= 50
             
         return score
 
@@ -216,8 +216,30 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
         'Neuvillette': ['Bennett'],
         'Lyney': ['Xingqiu', 'Yelan'],
         'Tighnari': ['Xiangling'],
-        'Mavuika': ['Xiangling']
     }
+    SYNERGY_RULES = {
+        'Xiao': {
+            'preferred': ['Faruzan', 'Jean', 'Xianyun', 'Furina','Bennett', 'Sucrose'],
+            'excluded_elements': ['Dendro', 'Geo']
+        },
+        'Itto': {
+            'preferred': ['Gorou', 'Albedo', 'Zhongli'],
+            'excluded_elements': ['Dendro']
+        },
+        'Ayaka': {
+            'preferred_elements': ['Hydro', 'Cryo', 'Anemo'],
+            'excluded_elements': ['Electro', 'Geo', 'Dendro']
+        },
+        'Yoimiya': {
+            'preferred': ['Yelan', 'Xingqiu', 'Bennett', 'Yun Jin', 'Furina'],
+            'excluded_elements': ['Dendro', 'Geo']
+        },
+        'Chasca': {
+            'preferred_elements': ['Pyro', 'Hydro', 'Electro', 'Cryo'],
+            'excluded_elements': ['Anemo', 'Geo', 'Dendro']
+        }
+    }
+
     char_cache = {}
     char_elements = {}
     char_nightsoul = {}
@@ -280,11 +302,28 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
 
     def calculate_team_score(team):
         elements = [char_cache[char]['element'] for char in team]
+        print(elements)
         base_score = sum(char_cache[char]['tier_value'] for char in team)
         resonance_score = calculate_resonance_score(elements, team, char_cache)
         nightsoul_score = calculate_nightsoul_score(team)
         off_field_bonus = calculate_off_field_bonus(team)
-        return base_score + resonance_score + nightsoul_score + off_field_bonus
+        synergy_score = 0
+        for char in team:
+            if char in SYNERGY_RULES:
+                rules = SYNERGY_RULES[char]
+                if 'preferred_elements' in rules:
+                    matched_elements = [e for e in elements if e in rules['preferred_elements']]
+                    synergy_score += 15 * len(matched_elements)
+                
+                if 'preferred' in rules:
+                    matched_char = [c for c in team if c in rules['preferred']]
+                    synergy_score += 30 * len(matched_char)
+
+                if 'excluded_elements' in rules:
+                    matched_e = [e for e in elements if e in rules['excluded_elements']]
+                    synergy_score -= 100 * len(matched_e)
+                    
+        return base_score + resonance_score + nightsoul_score + off_field_bonus + synergy_score
 
     seen_teams = set()
     def is_unique_team(team):
@@ -293,7 +332,7 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
             return False
         seen_teams.add(team_key)
         return True
-
+    
     collected_teams = []
     
     for main in role_chars['Main DPS']:
@@ -326,6 +365,19 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
                     continue
                 score = calculate_team_score(team)
                 teams_for_main.append((team, score))
+
+        #Format C: hypercarry
+        for sub in sub_candidates:
+            for supports in combinations(support_candidates, 3):
+                team = [main] + list(supports)
+                if len(set(team)) != 4:
+                    continue
+                if not is_unique_team(team):
+                    continue
+                score = calculate_team_score(team)
+                teams_for_main.append((team, score))
+ 
+
         
         teams_for_main.sort(key=lambda x: x[1], reverse=True)
         teams_for_main = teams_for_main[:max_teams_per_dps]
