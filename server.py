@@ -237,7 +237,13 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
         'Chasca': {
             'preferred_elements': ['Pyro', 'Hydro', 'Electro', 'Cryo'],
             'excluded_elements': ['Anemo', 'Geo', 'Dendro']
+        },
+        'Kinich': {
+            'preferred': ['Emilie', 'Bennett', 'Xiangling', 'Thoma', 'Zhongli'],
+            'preferred_elements': ['Pyro', 'Dendro'],
+            'excluded_elements': ['Anemo', 'Geo', 'Electro']
         }
+        
     }
 
     char_cache = {}
