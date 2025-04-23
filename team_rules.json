@@ -1,0 +1,36 @@
+{
+  "incompatible_supports": {
+    "alhaitham": ["bennett", "kaedehara-kazuha", "xiangling"],
+    "hu-tao": ["bennett"],
+    "neuvillette": ["bennett"],
+    "lyney": ["xingqiu", "yelan"],
+    "tighnari": ["xiangling"]
+  },
+  "synergy_rules": {
+    "xiao": {
+      "preferred": ["faruzan", "jean", "xianyun", "furina", "bennett", "sucrose"],
+      "excluded_elements": ["Dendro", "Geo"]
+    },
+    "arataki-itto": {
+      "preferred": ["gorou", "albedo", "zhongli"],
+      "excluded_elements": ["Dendro"]
+    },
+    "kamisato-ayaka": {
+      "preferred_elements": ["Hydro", "Cryo", "Anemo"],
+      "excluded_elements": ["Electro", "Geo", "Dendro"]
+    },
+    "yoimiya": {
+      "preferred": ["yelan", "xingqiu", "bennett", "yun-jin", "furina"],
+      "excluded_elements": ["Dendro", "Geo"]
+    },
+    "chasca": {
+      "preferred_elements": ["Pyro", "Hydro", "Electro", "Cryo"],
+      "excluded_elements": ["Anemo", "Geo", "Dendro"]
+    },
+    "kinich": {
+      "preferred": ["emilie", "bennett", "xiangling", "thoma", "zhongli"],
+      "preferred_elements": ["Pyro", "Dendro"],
+      "excluded_elements": ["Anemo", "Geo", "Electro"]
+    }
+  }
+}
