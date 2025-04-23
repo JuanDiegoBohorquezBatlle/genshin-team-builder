@@ -1,11 +1,13 @@
 import google.generativeai as genai
 import json
+import os
 
-API_KEY = '' 
+api_key = os.getenv('API_KEY')
+if not api_key:
+    raise ValueError("API_KEY environment variable not set.")
+genai.configure(api_key=api_key)
 
-genai.configure(api_key=API_KEY)
-
-model = genai.GenerativeModel("gemini-2.0-flash")
+model = genai.GenerativeModel("gemini-2.5-flash-preview-04-17")
 
 async def explain_teams(teams): 
     character_data_path='characters.json'
@@ -55,7 +57,7 @@ async def explain_teams(teams):
         - Swirl = triggered only with Pyro/Hydro/Electro/Cryo
         - Crystallize = triggered only with Pyro/Hydro/Electro/Cryo
         2. The following is an example explanation generation:
-        (GENERATE ALL TEAMS LIKE THIS, and always start with Team 1 instead of Team:)**Team 1: Mavuika (Main DPS), Citlali (Sub-DPS), Xilonen (Support), Bennett (Support)** 
+        (GENERATE ALL TEAMS LIKE THIS, and always start with Team 1)**Team 1: Mavuika (Main DPS), Citlali (Sub-DPS), Xilonen (Support), Bennett (Support)** 
         Both Citlali and Xilonen gain and lose Nightsoul points quickly, allowing Mavuika to continuously cast her Elemental Burst with ease. Bennett provides healing and ATK buff through his Burst.
 
         Role distribution: Citlali is a notable off-field Cryo driver who can help Mavuika continuously trigger Melt on most of her attacks. On top of that, Citlali reduces enemies’ resistance to Pyro by 20% through her Ascension passive. Let Xilonen take the field for a few seconds and shred enemies' RES, allowing your attacks to deal more manage.
@@ -64,7 +66,7 @@ async def explain_teams(teams):
         
         Overall, this is an extremely good team which should serve you well in both the abyss and the overworld. With 3 five-stars in the same team, are you sure you aren't a whale?
         
-        Recommended artifact set: Mavuika (Obsidian Codex), Citlali (Scroll of the Hero of Cinder City), Xilonen (Scroll of the Hero of Cinder City), Bennett (Noblesse Oblige)
+        Recommended artifact set: Mavuika (Obsidian Codex), Citlali (Scroll of the Hero of Cinder City), Xilonen (Archaic Petra), Bennett (Noblesse Oblige)
 
         Teams for Analysis:
         {team_text}
@@ -75,4 +77,3 @@ async def explain_teams(teams):
 
     print(response.text)
     return response.text
-
