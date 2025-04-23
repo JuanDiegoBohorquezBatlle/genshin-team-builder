@@ -41,7 +41,6 @@ async def explain_teams(teams):
     prompt = f'''
         You are an expert Genshin Impact team strategist. Based solely on the given team composition and character details, generate a structured explanation that covers elemental synergies, valid playstyles, role distribution, resource management (based on characters' energy requirements), a funny overall judgement on the team and optimal artifact sets. Keep the explanation for each team roughly the same length.
 
-        Guidelines:
         1. Allowed reactions (DO NOT mix up these reactions.):
         - Vaporize = Hydro + Pyro
         - Freeze = Cryo + Hydro
@@ -56,14 +55,14 @@ async def explain_teams(teams):
         - Swirl = triggered only with Pyro/Hydro/Electro/Cryo
         - Crystallize = triggered only with Pyro/Hydro/Electro/Cryo
         2. The following is an example explanation generation:
-        (GENERATE ALL TEAMS LIKE THIS, and always start with Team 1)**Team 1: Mavuika (Main DPS), Citlali (Sub-DPS), Xilonen (Support), Bennett (Support)** 
-        Both Citlali and Xilonen gain and lose Nightsoul points so quickly, allowing Mavuika to continuously cast her Elemental Burst with ease. Bennett provides healing and ATK buff through his Burst.
+        (GENERATE ALL TEAMS LIKE THIS, and always start with Team 1 instead of Team:)**Team 1: Mavuika (Main DPS), Citlali (Sub-DPS), Xilonen (Support), Bennett (Support)** 
+        Both Citlali and Xilonen gain and lose Nightsoul points quickly, allowing Mavuika to continuously cast her Elemental Burst with ease. Bennett provides healing and ATK buff through his Burst.
 
         Role distribution: Citlali is a notable off-field Cryo driver who can help Mavuika continuously trigger Melt on most of her attacks. On top of that, Citlali reduces enemies’ resistance to Pyro by 20% through her Ascension passive. Let Xilonen take the field for a few seconds and shred enemies' RES, allowing your attacks to deal more manage.
 
         Resource management: Fighting Spirit generation is crucial for Mavuika, but that is not an issue with both Citlali and Xilonen, who both have Nightsoul, in the team.
         
-        Overall, this is an extremely good team which should serve you well in both the abyss and the overworld. Are you sure you aren't a whale?
+        Overall, this is an extremely good team which should serve you well in both the abyss and the overworld. With 3 five-stars in the same team, are you sure you aren't a whale?
         
         Recommended artifact set: Mavuika (Obsidian Codex), Citlali (Scroll of the Hero of Cinder City), Xilonen (Scroll of the Hero of Cinder City), Bennett (Noblesse Oblige)
 

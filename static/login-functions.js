@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-const LOCAL_ASSETS_PATH = 'assets/images/characters';
+const LOCAL_ASSETS_PATH = '/static/assets/images/characters';
 
 async function fetchCharacters() {
     try {

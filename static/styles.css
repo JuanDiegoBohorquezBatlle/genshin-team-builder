@@ -38,6 +38,28 @@ margin-top: 10px; }
     box-sizing: border-box;
 }
 
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    width: 100%;
+    max-width: 900px; 
+    padding: 5px;
+    gap: 10px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    width: 100%;
+    max-width: 900px; 
+    padding: 5px;
+    gap: 10px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
 button {
     margin-top: 10px;
     width: 50%;
@@ -128,6 +150,15 @@ pre, .team-explanation {
     border: 2px solid #5b9fe7; 
 }
 
+.character-card {
+    position: relative;
+    text-align: center;
+    padding: 7px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
 .character-name {
     font-size: 14px;
     margin-top: 5px;
@@ -171,6 +202,7 @@ ul li {
     width: 90%;
     max-width: 1200px;
     margin: 0 auto;
+    margin-bottom:120px;
 }
 .character-icons-section {
     flex: 1;  
@@ -210,7 +242,6 @@ html, body {
     width: 100% !important; 
     float: left;
   }
-  
   .character-grid {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     width: 100%;
@@ -220,12 +251,19 @@ html, body {
   }
   @media (max-width: 768px) {
     .character-grid {
-        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); /* Smaller columns */
-        gap: 5px; 
-        padding: 2px;
-        width: 100%;
-        max-width: 100%;
-    }
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)) !important; /* Smaller columns */
+        gap: 5px !important;
+        padding: 1px;
+        }
+    .character-card {
+            max-width: 100px;
+            position: relative;
+            text-align: center;
+            padding: 2px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
 
     .character-icon {
         width: 20px; /* Smaller icons */
@@ -239,7 +277,44 @@ html, body {
     #characterSelectionContainer {
         padding: 0 10px;
         gap: 10px;
+        font-size: 10px; /* Smaller text */
     }
+    #characterSelectionContainer {
+        width: 100%;
+        padding: 0 5px 80px;
+        margin: 0;
+        box-sizing: border-box;
+    }
+    #pills-teams {
+        width: 100% !important; 
+        padding-left: 0 !important;
+   }
+    #teams-container {
+        height: auto !important;       
+        min-height: 200px;             
+        margin-bottom: 80px !important; 
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+     .team-explanation .character-name {
+        font-size: 12px !important; 
+    }
+    .explanation, .team-explanation {
+      font-size: 13px;
+      padding: 10px;
+      line-height: 1.4;
+    }
+    .team-card {
+        white-space: normal !important;
+        word-break: normal !important;
+        overflow-wrap: normal !important;
+        overflow: visible;
+    }   
+    .banner {
+        font-size: 10px;
+        padding: 1px;
+  }
+
 }
   
   #pills-teams {
@@ -247,7 +322,6 @@ html, body {
     float: left;
     padding-left: 20px;
   }
-  
   #pills-characters {
     width: 100%;
     max-width: 100vw;
@@ -255,6 +329,26 @@ html, body {
     box-sizing: border-box;
 }
 
+
+   .banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333; 
+    color: white;
+    text-align: center;
+    padding: 2px;
+    font-size: 14px;
+    z-index: 1000;
+    }
+
+    .banner .donate-link {
+        display: block; 
+        color: #fffff
+        text-decoration: none;
+        margin-top: 8px;
+    }
   
   .banner {
     position: fixed;
@@ -268,4 +362,11 @@ html, body {
     font-size: 14px;
     z-index: 1000;
 }
+
+    .banner .donate-link:hover {
+        text-decoration: underline;
+    } 
+
+
+
 

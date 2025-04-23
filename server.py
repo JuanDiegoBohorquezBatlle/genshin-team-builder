@@ -1,6 +1,6 @@
-import genshin
 from fastapi import FastAPI, HTTPException, Request 
 from pydantic import BaseModel
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 import genshin
@@ -29,6 +29,13 @@ class HoYoLABLoginRequest(BaseModel):
     password: str
 
 cookies = {}
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/")
+def read_root():
+    with open("static/login.html", "r") as file:
+        return HTMLResponse(content=file.read())
 
 @app.post("/hoyolab_login")
 async def hoyolab_login(request: HoYoLABLoginRequest):
@@ -243,7 +250,6 @@ def generate_teams_optimized(user_characters, character_data, num_teams, max_tea
             'preferred_elements': ['Pyro', 'Dendro'],
             'excluded_elements': ['Anemo', 'Geo', 'Electro']
         }
-        
     }
 
     char_cache = {}
