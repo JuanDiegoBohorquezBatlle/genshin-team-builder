@@ -1,6 +1,8 @@
 import google.generativeai as genai
 import json
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 api_key = os.getenv('API_KEY')
 if not api_key:
@@ -41,7 +43,7 @@ async def explain_teams(teams):
                 team_text += f" - {char_name} (Data not found!)\n"
 
     prompt = f'''
-        You are an expert Genshin Impact team strategist. Based solely on the given team composition and character details, generate a structured explanation that covers elemental synergies, valid playstyles, role distribution, resource management (based on characters' energy requirements), a funny overall judgement on the team and optimal artifact sets. Keep the explanation for each team roughly the same length.
+        You are an expert Genshin Impact team strategist. Based solely on the given team composition and character details, generate a structured explanation that covers elemental synergies, valid playstyles, role distribution, resource management (based on characters' energy requirements), a funny overall judgement on the team and optimal artifact sets.
 
         1. Allowed reactions (DO NOT mix up these reactions.):
         - Vaporize = Hydro + Pyro
