@@ -557,6 +557,19 @@
     "passive_talent_1": "When Arataki Itto uses consecutive Arataki Kesagiri, he obtains the following effects: \u2022 Each slash increases the ATK SPD of the next slash by 10%. Max ATK SPD increase is 30%. \u2022 Increases his resistance to interruption. These effects will be cleared once he stops performing consecutive slashes.",
     "passive_talent_2": "Arataki Kesagiri DMG is increased by 35% of Arataki Itto's DEF."
   },
+  "Iansan":{
+    "talent_priority": [
+      "elemental burst",
+      "elemental skill",
+      "normal attack"
+    ],
+    "best_artifact_set": {
+      "name": "scroll of the hero of cinder city",
+      "piece_bonus": "4pc) After the equipping character triggers a reaction, all nearby party members gain a 12% Elemental DMG Bonus for the involved Elemental Types for 15s. If the equipping character is in the Nightsoul's Blessing state when triggering this effect, all party members gain an additional 28% Elemental DMG bonus for the Elemental Types involved in the reaction for 20s.",
+      "description": ""
+    },
+    "elemental_skill": "Iansan's Elemental Skill allows her to dash forward and strike the ground near the enemy, dealing AoE Electro DMG. This seems to be used as a general damage tool and as a way to regain Elemental Energy with the amount of particles generated.",
+    "elemental_burst":"Iansan strikes the area around her, dealing AoE Electro DMG and summoning a Kinetic Energy Scale that follows the active character around. For the duration of her Elemental Burst, this Kinetic Energy Scale raises the active character's ATK by a portion of Iansan's own ATK. Iansan's Elemental Burst scales not only on her ATK, but also the amount of Nightsoul Points she has since her ATK buff's potency is based on how high her Nightsoul gauge is. Rewards Frequency in Movement Iansan gains Nightsoul Points through the movement of other active characters that is not her, meaning fast-moving DPS characters such as Mavuika or Kinich can take advantage of this for bigger buffs."},
   "Jean": {
     "talent_priority": [
       "elemental burst",
@@ -1278,6 +1291,21 @@
     "passive_talent_1": " Embrace of Winds Holding Skyward Sonnet creates and upcurrent that lasts for 20s.",
     "passive_talent_2": " Stormeye Regenerates 15 Energy for Venti after the effects of Wind's Grand Ode end. If an Elemental Absorption occurred, this also restores 15 Energy to all characters of that corresponding element in the party."
   },
+  "Varesa": {
+    "talent_priority": [
+      "normal attack",
+      "elemental burst",
+      "elemental skill"
+    ],
+    "best_artifact_set": {
+      "name": "Long Night's Oath",
+      "piece_bonus": "4pc",
+      "description": "Running 4-pc Long Night's Oath is Varesa's best bet for damage as it stacks her plunging damage by up to 100% more if all 5 stacks are triggered."
+    },
+    "elemental_skill":"Activating Varesa's Elemental Skill causes her to enter a special combat state that does a few things for her. Normal Attacks Lead to Plunge Opportunities Instead of having to use Plunge Attacks, Varesa can just tap the Normal Attack button and gain the same plunge opportunity as with her normal Charged Attack. This effectively adds more convenience and movement to Varesa's kit. Increases Attack Speed In this state, Varesa's attack speed is increased, allowing her to output more damage quickly. On its own, this does not do much for Varesa on the ground, but since she gets raised into the air with her Normal Attacks in this state, this attack speed buff increases her Plunging Attack frequency and DPS.",
+    "elemental_burst":"Leaps into the air before using the momentum of the drop to unleash a powerful flying kick, dealing Nightsoul-aligned AoE Electro DMG to opponents — just like those heroes of justice in woven scrolls for kids! After using this Skill, Varesa's Nightsoul points will be restored to maximum and she will enter the Fiery Passion state. Increases Varesa's interruption resistance. While affected by Apex Drive, Varesa can ignore her Elemental Burst CD and consume less Energy to use her special Elemental Burst, Guardian Vent: Volcano Kablam: This causes her to use the especially powerful Plunging Attack, Thunderous Tornado Eruption, which deals Nightsoul-aligned AoE Electro DMG upon landing before causing her to exit Apex Drive. This DMG is considered Plunging Attack DMG. Varesa will exit Apex Drive after using her Elemental Skill. In the Fiery Passion state, Varesa's Elemental Burst will deal a greater amount of Nightsoul-aligned AoE Electro DMG.",
+    "passive_talent_1":"Tag-Team Triple Jump! After using the Elemental Skill Riding the Night-Rainbow, Varesa gains Rainbow Crash for 5s. During this time, when Varesa uses a Plunging Attack, the shockwave DMG dealt when she hits the ground is increased by 50% of her ATK. If Varesa is in the Fiery Passion state, this ground impact DMG is increased by 180% of her ATK instead. The Rainbow Crash effect will be canceled once a ground impact hits an opponent, or when its duration expires.",
+    "passive_talent_2":"When a nearby party member triggers a Nightsoul Burst, Varesa's ATK increases by 35% for 12s. Max 2 stacks. Each stack's duration is counted independently."},
   "Wanderer": {
     "talent_priority": [
       "Normal attack and elemental skill",

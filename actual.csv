@@ -35,6 +35,7 @@ Gaming,Sub-DPS,A,The Bell,Pyro,FALSE,FALSE
 Ganyu,Main DPS,A,Amos' Bow,Cryo,FALSE,FALSE
 Gorou,Support,B,Favonius Warbow,Geo,FALSE,TRUE
 Hu-Tao,Main DPS,S,Staff of Homa,Pyro,FALSE,FALSE
+Iansan,Support,SS,,Electro,TRUE,TRUE
 Jean,Support,S,Freedom-Sworn,Anemo,FALSE,TRUE
 Kaedehara-Kazuha,Support,SS,Freedom-Sworn,Anemo,FALSE,TRUE
 Kaveh,Main DPS,C,,Dendro,FALSE,FALSE
@@ -81,6 +82,7 @@ Traveler-Electro,Support,C,,Electro,FALSE,FALSE
 Traveler-Dendro,Sub-DPS,B,,Dendro,FALSE,TRUE
 Traveler-Hydro,Sub-DPS,C,,Hydro,FALSE,FALSE
 Traveler-Pyro,Sub-DPS,A,,Pyro,FALSE,TRUE
+Varesa,Main DPS,S,,Electro,TRUE,FALSE
 Venti,Sub-DPS/Support,A,Elegy for the End,Anemo,FALSE,TRUE
 Wanderer,Main DPS,A,Tulaytullah's Remembrance,Anemo,FALSE,FALSE
 Wriothesley,Main DPS,S,Cashflow Supervision,Cryo,FALSE,FALSE
