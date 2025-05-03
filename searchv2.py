@@ -32,22 +32,27 @@ async def explain_teams(teams):
         team_text += f"**Team Explanation Start**\nTEAM: {formatted_team_key}\nExplanation:\n"
         for char in team['Characters']:
             char_name = char['Name']
-            char_data = character_data.get(char_name.strip())
+            # Ensure the lookup key is capitalized correctly, handling hyphens (e.g., "Kaedehara-Kazuha")
+            lookup_key = '-'.join(part.capitalize() for part in char_name.strip().split('-'))
+            char_data = character_data.get(lookup_key)
 
             if char_data:
-                team_text += f" - {char_name} (Role: {char['Role']}, Element: {char['Element']}, Tier: {char['Tier']})\n"
+                # Use the original char_name for display purposes if needed, or lookup_key if consistent capitalization is preferred
+                team_text += f" - {lookup_key} (Role: {char['Role']}, Element: {char['Element']}, Tier: {char['Tier']})\n" 
                 team_text += f"    - Elemental Skill: {char_data.get('elemental_skill', 'N/A')}\n"
                 team_text += f"    - Elemental Burst: {char_data.get('elemental_burst', 'N/A')}\n"
                 team_text += f"    - Artifact Set: {char_data.get('best_artifact_set', 'N/A')}\n"
             else:
-                team_text += f" - {char_name} (Data not found!)\n"
-
+                 # Use the original char_name or lookup_key here as well
+                team_text += f" - {lookup_key} (Data not found!)\n"
+    print(team_text)
     prompt = f'''
         You are an expert Genshin Impact team strategist. Based solely on the given team composition and character details, generate a structured explanation that covers elemental synergies, valid playstyles, role distribution, resource management (based on characters' energy requirements), a funny overall judgement on the team and optimal artifact sets.
 
-        1. Allowed reactions (DO NOT mix up these reactions.):
+        1. Allowed reactions (DO NOT mix up these reactions, DO NOT MENTION UNRELATED REACTIONS.):
         - Vaporize = Hydro + Pyro
         - Freeze = Cryo + Hydro
+        - Superconduct = Cryo + Electro
         - Melt = Cryo + Pyro
         - Burning = Dendro + Pyro 
         - Bloom = Dendro + Hydro
@@ -58,7 +63,8 @@ async def explain_teams(teams):
         - Overload = Pyro + Electro
         - Swirl = triggered only with Pyro/Hydro/Electro/Cryo
         - Crystallize = triggered only with Pyro/Hydro/Electro/Cryo
-        2. The following is an example explanation generation:
+        2. IMPORTANT: Capitalize the first letter of all character names in the explanation, but KEEP the hyphens, e.g Kamisato-Ayato instead of kamisato-ayato.
+        3. The following is an example explanation generation:
         (GENERATE ALL TEAMS LIKE THIS, and always start with Team 1)**Team 1: Mavuika (Main DPS), Citlali (Sub-DPS), Xilonen (Support), Bennett (Support)** 
         Both Citlali and Xilonen gain and lose Nightsoul points quickly, allowing Mavuika to continuously cast her Elemental Burst with ease. Bennett provides healing and ATK buff through his Burst.
 

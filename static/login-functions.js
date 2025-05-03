@@ -1,5 +1,5 @@
 // Define the API base URL
-const BASE_URL = 'https://genshinteambuilder.xyz';  
+const BASE_URL = 'http://127.0.0.1:8000';  
 
 // Utility function to toggle element visibility
 function toggleVisibility(elementId, show) {
@@ -60,7 +60,6 @@ async function submitLogin() {
 async function getUserCharacters() {
     try {
         const response = await fetch(`${BASE_URL}/get_characters`);
-        console.log("response:", response);
         if (!response.ok) {
             throw new Error('Failed to fetch characters');
         }
@@ -93,7 +92,6 @@ async function generateTeams() {
         }
 
         const data = await response.json();
-        console.log('Server response:', data);
 
         if (!data.teams || !Array.isArray(data.teams)) {
             throw new Error('Invalid teams data format: ' + JSON.stringify(data));
@@ -235,7 +233,10 @@ async function generateTeamsFromSelection() {
     try {
         toggleVisibility('loading', true);
 
-        const formattedCharacters = Array.from(selectedCharacters);
+        // Ensure character names are capitalized correctly before sending
+        const formattedCharacters = Array.from(selectedCharacters).map(name =>
+            name.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+        );
         console.log('Sending characters to backend:', formattedCharacters);
 
         const response = await fetch(`${BASE_URL}/generate_teams_from_selection`, {
@@ -268,8 +269,6 @@ async function generateTeamsFromSelection() {
                 </div>
             </li>
         `).join('');
-        console.log("TEAMS", teamsHTML);
-        console.log("EXPLANATION:", data.explanation);
 
         localStorage.setItem('teamsContent', teamsHTML);
         localStorage.setItem('explanationContent', data.explanation || '');
@@ -298,7 +297,6 @@ function canonicalizeTeamKey(key) {
   }
 
 function displayTeams(teams, explanation) {
-    console.log("DisplayTeams called with:", { teams, explanation });
     const teamsList = document.getElementById("teamsList");
     const teamsContainer = document.getElementById('teams-container');
 
@@ -312,8 +310,6 @@ function displayTeams(teams, explanation) {
         return;
     }
 
-    console.log("Received teams:", teams);
-    console.log("Received explanation:", explanation);
 
     if (!teams || teams.length === 0) {
         teamsList.innerHTML = "<p>No teams generated.</p>";
@@ -331,7 +327,6 @@ function displayTeams(teams, explanation) {
             explanationSections[teamKey] = teamExplanation;
         }
     }
-    console.log(explanationSections);
     teamsList.innerHTML = teams.map((team) => {
         const teamName = `<h3>${team["Team Name"]}</h3>`;
 
@@ -344,13 +339,16 @@ function displayTeams(teams, explanation) {
             </div>
         `).join("");
 
-        const teamKey = canonicalizeTeamKey(team.Characters.map(c => `${c.Name} (${c.Role})`).join(", "));
-        console.log("Looking for explanation with key:", teamKey);
+        // Correctly capitalize hyphenated names (e.g., Kaedehara-Kazuha) for the explanation lookup key
+        const teamKey = canonicalizeTeamKey(
+            team.Characters.map(c => 
+                `${c.Name.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('-')} (${c.Role})`
+            ).join(", ")
+        );
 
         const formattedExplanation = explanationSections[teamKey]
             ? `<p>${explanationSections[teamKey].replace(/\n/g, "<br>")}</p>`
             : "<p>No explanation available.</p>";
-        console.log(formattedExplanation);
         return `
             <li class="team-card">
                 ${teamName}
@@ -382,4 +380,3 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCharacterIcons();
     toggleVisibility('characterSelectionContainer', true);
 });
-
