@@ -25,6 +25,7 @@ Dehya,Main DPS,B,Beacon of the Reed Sea,Pyro,FALSE,FALSE
 Diluc,Main DPS,A,Wolf's Gravestone,Pyro,FALSE,FALSE
 Diona,Support,A,Sacrificial Bow,Cryo,FALSE,TRUE
 Dori,Support,C,Favonius Greatsword,Electro,FALSE,TRUE
+Escoffier,Sub-DPS/Support,SS,,Cryo,FALSE,TRUE
 Emilie,Sub-DPS,S,,Dendro,FALSE,TRUE
 Eula,Main DPS,B,Song of Broken Pines,Cryo,FALSE,FALSE
 Faruzan,Support,A,Favonius Warbow,Anemo,FALSE,TRUE
@@ -36,6 +37,7 @@ Ganyu,Main DPS,A,Amos' Bow,Cryo,FALSE,FALSE
 Gorou,Support,B,Favonius Warbow,Geo,FALSE,TRUE
 Hu-Tao,Main DPS,S,Staff of Homa,Pyro,FALSE,FALSE
 Iansan,Support,SS,,Electro,TRUE,TRUE
+Ifa,Main DPS,B,,Anemo,TRUE,FALSE
 Jean,Support,S,Freedom-Sworn,Anemo,FALSE,TRUE
 Kaedehara-Kazuha,Support,SS,Freedom-Sworn,Anemo,FALSE,TRUE
 Kaveh,Main DPS,C,,Dendro,FALSE,FALSE
