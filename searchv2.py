@@ -1,15 +1,14 @@
-import google.generativeai as genai
+from google import genai
 import json
 import os
+from google.genai import types
 from dotenv import load_dotenv
 load_dotenv()
 
-api_key = os.getenv('API_KEY')
-if not api_key:
+API_KEY = os.getenv('API_KEY')
+if not API_KEY:
     raise ValueError("API_KEY environment variable not set.")
-genai.configure(api_key=api_key)
-
-model = genai.GenerativeModel("gemini-2.5-flash-preview-04-17")
+client = genai.Client(api_key=API_KEY)
 
 async def explain_teams(teams): 
     character_data_path='characters.json'
@@ -83,7 +82,10 @@ async def explain_teams(teams):
         '''
 
 
-    response = model.generate_content(prompt, temperature=0.5) 
+    response = client.models.generate_content(model="gemini-2.5-flash-preview-04-17",
+                                       contents=prompt, 
+                                       config=types.GenerateContentConfig(temperature=0.5)
+                                       ) 
 
     print(response.text)
     return response.text
