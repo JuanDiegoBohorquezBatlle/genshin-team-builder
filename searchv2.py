@@ -41,6 +41,8 @@ async def explain_teams(teams):
                 team_text += f" - {lookup_key} (Role: {char['Role']}, Element: {char['Element']}, Tier: {char['Tier']})\n" 
                 team_text += f"    - Elemental Skill: {char_data.get('elemental_skill', 'N/A')}\n"
                 team_text += f"    - Elemental Burst: {char_data.get('elemental_burst', 'N/A')}\n"
+                team_text += f"    - Passive talent 1: {char_data.get('passive_talent_1','N/A')}\n"
+                team_text += f"    - Passive talent 2: {char_data.get('passive_talent_2', 'N/A')}\n"
                 team_text += f"    - Artifact Set: {char_data.get('best_artifact_set', 'N/A')}\n"
             else:
                  # Use the original char_name or lookup_key here as well
@@ -81,7 +83,7 @@ async def explain_teams(teams):
         '''
 
 
-    response = model.generate_content(prompt) 
+    response = model.generate_content(prompt, temperature=0.5) 
 
     print(response.text)
     return response.text
