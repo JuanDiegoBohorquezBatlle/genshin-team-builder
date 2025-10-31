@@ -1,4 +1,7 @@
 .aider*
 .env
 generate_json
-
+.venv
+.vscode
+static
+__pycache__

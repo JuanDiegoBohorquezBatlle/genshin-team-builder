@@ -4,7 +4,8 @@
     "hu-tao": ["bennett"],
     "neuvillette": ["bennett"],
     "lyney": ["xingqiu", "yelan"],
-    "tighnari": ["xiangling"]
+    "tighnari": ["xiangling"],
+    "mavuika": ["xingqiu"]
   },
   "synergy_rules": {
     "xiao": {
@@ -31,6 +32,16 @@
       "preferred": ["emilie", "bennett", "xiangling", "thoma", "zhongli"],
       "preferred_elements": ["Pyro", "Dendro"],
       "excluded_elements": ["Anemo", "Geo", "Electro"]
+    },
+    "iansan": {
+      "preferred": ["mavuika", "kinich", "varesa", "clorinde", "chasca"],
+      "preferred_elements": ["Pyro", "Electro"]
+    },
+    "mavuika": {
+      "preferred": ["bennett", "xilonen", "citlali", "iansan"]
+    },
+    "citlali": {
+      "preferred_elements": ["Pyro", "Hydro"]
     }
   }
 }

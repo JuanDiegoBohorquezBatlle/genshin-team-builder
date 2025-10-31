@@ -1,5 +1,5 @@
 // Define the API base URL
-const BASE_URL = 'http://127.0.0.1:8000';  
+const BASE_URL = '';  
 
 // Utility function to toggle element visibility
 function toggleVisibility(elementId, show) {
